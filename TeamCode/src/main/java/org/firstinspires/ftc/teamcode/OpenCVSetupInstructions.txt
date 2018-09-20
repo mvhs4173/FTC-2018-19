@@ -1,0 +1,6 @@
+1. Right click on the TeamCode folder in the project explorer
+2. Select "Open Module Settings"
+3. Click on the "Dependancies" tab
+4. Click on the green "+" button to the right and in the dropdown select "Module Dependancy"
+5. Select "openCVLibrary343" in the menu then click "Ok"
+6. Click the "Ok" button
