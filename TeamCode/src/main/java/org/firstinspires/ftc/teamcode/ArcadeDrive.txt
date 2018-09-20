@@ -1,0 +1,6 @@
+double X=x;
+double Y=y;
+double V=(100-Math.abs(X))*(Y/100)+Y;
+double W=(100-Math.abs(Y))*(X/100)+X;
+double L=(V-W)/2;
+double R=(V+W)/2;
