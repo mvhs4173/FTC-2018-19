@@ -35,7 +35,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
+
 
 import org.firstinspires.ftc.teamcode.HardwarePushbot;
 
@@ -61,7 +63,6 @@ public class PushbotTeleopTank_Iterative extends OpMode{
     /* Declare OpMode members. */
     HardwarePushbot robot = new HardwarePushbot(); // use the class created to define a Pushbot's hardwar
 
-
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -71,11 +72,8 @@ public class PushbotTeleopTank_Iterative extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Bonjour Monsieur");//
-        telemetry.addData("Say", "Tank Drive");//
-        telemetry.addData("Say", "Version 0.0.2");//
+        telemetry.addData("Say", "This is Zach's Robot");
         updateTelemetry(telemetry);
     }
 
@@ -98,13 +96,28 @@ public class PushbotTeleopTank_Iterative extends OpMode{
      */
     @Override
     public void loop() {
-        robot.leftFrontMotor.setPower(1);
-        robot.rightFrontMotor.setPower(1);
-        robot.leftBackMotor.setPower(1);
-        robot.rightBackMotor.setPower(1);
+        double joysticky = -gamepad1.left_stick_y;
+        double joystickx = gamepad1.left_stick_x;
 
-        // Send telemetry message to signify robot running;
-        telemetry.addData("Angle", "30");
+        if (joystickx>0){
+            robot.leftFrontMotor.setPower(joystickx);
+            robot.leftBackMotor.setPower(joystickx);
+            robot.rightBackMotor.setPower(-joystickx);
+            robot.rightFrontMotor.setPower(-joystickx);
+        } else if (joystickx<0){
+                robot.rightFrontMotor.setPower(joystickx);
+                robot.rightBackMotor.setPower(joystickx);
+                robot.leftBackMotor.setPower(-joystickx);
+                robot.leftFrontMotor.setPower(-joystickx);
+        } else {
+            robot.rightFrontMotor.setPower(joysticky);
+            robot.rightBackMotor.setPower(joysticky);
+            robot.leftBackMotor.setPower(joysticky);
+            robot.leftFrontMotor.setPower(joysticky);
+        }
+            // Send telemetry message to signify robot running;
+        telemetry.addData("joystick y", joysticky);
+        telemetry.addData("joystick x", joystickx);
         updateTelemetry(telemetry);
     }
 
