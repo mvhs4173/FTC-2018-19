@@ -1,15 +1,12 @@
 
+# Current Tasks
+* Oliver: Teaching and Help
+* Weston: Vision, Teaching
+* Thor: Sensors,
+* Bek: Drive, learning
+* Zach: learning,
 
-
-
-
-
-
-
-
-
-
-
+```
 ## TeamCode Module
 
 Welcome!
@@ -77,8 +74,10 @@ Driver Station's OpMode list.
 Each OpMode sample class begins with several lines of code like the ones shown below:
 
 ```
+```
  @TeleOp(name="Template: Linear OpMode", group="Linear Opmode")
  @Disabled
+```
 ```
 
 The name that will appear on the driver station's "opmode list" is defined by the code:
@@ -131,3 +130,4 @@ Note: Some names start with "Team" and others start with "team".  This is intent
 5)  Add:    include ':Team0417' to the "/settings.gradle" file.
     
 6)  Open up Android Studios and clean out any old files by using the menu to "Build/Clean Project""
+```
