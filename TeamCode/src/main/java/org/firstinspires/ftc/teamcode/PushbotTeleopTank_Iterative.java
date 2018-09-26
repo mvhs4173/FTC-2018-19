@@ -32,12 +32,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.teamcode.HardwarePushbot;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -59,6 +55,7 @@ import org.firstinspires.ftc.teamcode.HardwarePushbot;
 public class PushbotTeleopTank_Iterative extends OpMode{
 
     /* Declare OpMode members. */
+
     HardwarePushbot robot = new HardwarePushbot(); // use the class created to define a Pushbot's hardwar
     Compass compass = new Compass(robot.imu);
 
@@ -102,8 +99,6 @@ public class PushbotTeleopTank_Iterative extends OpMode{
         double currentHeading = compass.getHeading();
         robot.leftFrontMotor.setPower(1);
         robot.rightFrontMotor.setPower(1);
-        robot.leftBackMotor.setPower(1);
-        robot.rightBackMotor.setPower(1);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("Angle", currentHeading);
