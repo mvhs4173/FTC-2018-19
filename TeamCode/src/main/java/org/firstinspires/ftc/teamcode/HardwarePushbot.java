@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -27,10 +28,11 @@ public class HardwarePushbot
 {
     /* Public OpMode members. */
     //You should use the acronyms for future reference, don't worry, it's fixed//
-    public DcMotor  leftFrontMotor = null;
-    public DcMotor  rightFrontMotor = null;
-    public DcMotor  leftBackMotor = null;
-    public DcMotor  rightBackMotor = null;
+    public DcMotor leftFrontMotor = null;
+    public DcMotor rightFrontMotor = null;
+    public DcMotor leftBackMotor = null;
+    public DcMotor rightBackMotor = null;
+    public BNO055IMU imu = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -48,14 +50,7 @@ public class HardwarePushbot
 
         // Define and Initialize Motors
         leftFrontMotor   = hwMap.dcMotor.get("Front Left Motor");
-        rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
-        rightBackMotor   = hwMap.dcMotor.get("Back Right Motor");
-        leftBackMotor    = hwMap.dcMotor.get("Back Left Motor");
-
-        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-        leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
+        imu = hwMap.get(BNO055IMU.class, "imu");
 
     }
 
