@@ -1,3 +1,7 @@
 1. Next to the save button click the "Sync Project with gradle files" button. it has a green circle with 2 blue arrows around it
+<<<<<<< HEAD
+2. In the output it may error. If it does download whatever files it tell you to by clicking on the link
+=======
 2. In the output it may error. If it does download whatever files it tell you to by clicking on the link
 3. When this finishes you should see a folder in the Project explorer named "openCVLibrary343" if you see this folder then the setup is finished
+>>>>>>> 67192b34c0605cf28d9bec173b763174757154a3

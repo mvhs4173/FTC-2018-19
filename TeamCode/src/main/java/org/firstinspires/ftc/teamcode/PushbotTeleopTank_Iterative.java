@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * The code is structured as an Iterative OpMode
  *
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
- * All device access is managed through the Hardware class.
+ * All device access is managed through the HardwarePushbot class.
  *
  * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
  * It raises and lowers the claw using the Gampad Y and A buttons respectively.
@@ -55,7 +55,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class PushbotTeleopTank_Iterative extends OpMode{
 
     /* Declare OpMode members. */
-    Hardware robot = new Hardware(); // use the class created to define a Pushbot's hardwar
+
+    HardwarePushbot robot = new HardwarePushbot(); // use the class created to define a Pushbot's hardwar
+    Compass compass = new Compass(robot.imu);
 
 
     /*
@@ -94,11 +96,12 @@ public class PushbotTeleopTank_Iterative extends OpMode{
      */
     @Override
     public void loop() {
+        double currentHeading = compass.getHeading();
         robot.leftFrontMotor.setPower(1);
         robot.rightFrontMotor.setPower(1);
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("Angle", "30");
+        telemetry.addData("Angle", currentHeading);
         updateTelemetry(telemetry);
     }
 
@@ -110,4 +113,3 @@ public class PushbotTeleopTank_Iterative extends OpMode{
     }
 
 }
-
