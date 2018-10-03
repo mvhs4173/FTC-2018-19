@@ -13,4 +13,9 @@ apply from: '../build.common.gradle'
 dependencies {
 }
 
-android { sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jniLibs'] } } }
+android { sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jniLibs'] } }
+    compileOptions {
+        targetCompatibility X
+        sourceCompatibility X
+    }
+}

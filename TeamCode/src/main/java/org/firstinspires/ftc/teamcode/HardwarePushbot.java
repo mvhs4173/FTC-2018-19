@@ -44,11 +44,21 @@ public class HardwarePushbot
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftFrontMotor   = hwMap.dcMotor.get("Front Left Motor");
+        leftFrontMotor = hwMap.dcMotor.get("Front Left Motor");
 
         imu = hwMap.get(BNO055IMU.class, "imu");
 
         rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
+
+        imu = hwMap.get(BNO055IMU.class, "imu");
+
+        leftBackMotor = hwMap.dcMotor.get("Back Left Motor");
+
+        imu = hwMap.get(BNO055IMU.class, "imu");
+
+        rightBackMotor = hwMap.dcMotor.get("Back Right Motor");
+
+        imu = hwMap
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
