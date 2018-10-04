@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,8 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Motor channel:  Left  drive motor:        "left_drive"
  * Motor channel:  Right drive motor:        "right_drive"
  */
-public class HardwarePushbot
-{
+public class HardwarePushbot {
     /* Public OpMode members. */
     //You should use the acronyms for future reference, don't worry, it's fixed//
 
@@ -27,6 +27,7 @@ public class HardwarePushbot
     public DcMotor rightFrontMotor = null;
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
+    public DcMotor CollectorMotor = null;
     public BNO055IMU imu = null;
 
     /* local OpMode members. */
@@ -35,7 +36,6 @@ public class HardwarePushbot
 
     /* Constructor */
     public HardwarePushbot(){
-
     }
 
     /* Initialize standard HardwarePushbot interfaces */
@@ -52,18 +52,10 @@ public class HardwarePushbot
 
         imu = hwMap.get(BNO055IMU.class, "imu");
 
-        leftBackMotor = hwMap.dcMotor.get("Back Left Motor");
-
-        imu = hwMap.get(BNO055IMU.class, "imu");
-
-        rightBackMotor = hwMap.dcMotor.get("Back Right Motor");
-
-        imu = hwMap
+        //CollectorMotor
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-
-
     }
 
     /***
