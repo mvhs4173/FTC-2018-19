@@ -1,10 +1,16 @@
 
 # Current Tasks
+###Two weeks left
 * Oliver: Teaching and Help
 * Weston: Vision, Teaching
 * Thor: Sensors,
 * Bek: Drive, learning
 * Zach: learning,
+
+collector two motors
+neverrest speed
+snowblower position
+
 
 ```
 ## TeamCode Module
