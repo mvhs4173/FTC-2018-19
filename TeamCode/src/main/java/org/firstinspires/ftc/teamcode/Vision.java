@@ -13,7 +13,6 @@ import android.content.Context;
 import android.app.Activity;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.vuforia.Vuforia;
 
 import org.opencv.*;
 
@@ -21,7 +20,6 @@ import org.opencv.*;
 public class Vision {
     CameraManager cameraManager;
     String cameraId;
-    CameraDevice.StateCallback callback;
 
     //Gets the id of the back camera on the phone
     private String getBackCameraId(){
