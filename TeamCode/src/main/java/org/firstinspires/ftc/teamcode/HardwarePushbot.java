@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -27,8 +28,10 @@ public class HardwarePushbot {
     public DcMotor rightFrontMotor = null;
     public DcMotor leftBackMotor = null;
     public DcMotor rightBackMotor = null;
-    public DcMotor CollectorMotor = null;
+    public DcMotor collectorMotor = null;
+    public DcMotor collectorMotor2 = null;
     public BNO055IMU imu = null;
+    public Servo clawServo = null;
 
     /* local OpMode members. */
     HardwareMap hwMap  =  null;
@@ -50,12 +53,17 @@ public class HardwarePushbot {
 
         rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
 
-        imu = hwMap.get(BNO055IMU.class, "imu");
+        collectorMotor = hwMap.dcMotor.get("Collector Motor");
 
-        //CollectorMotor
+        collectorMotor2 = hwMap.dcMotor.get("Collector Motor 2");
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        collectorMotor.setDirection(DcMotor.Direction.FORWARD);
+        collectorMotor2.setDirection(DcMotor.Direction.FORWARD);
+
+        // Define and Initialize Servos
+        clawServo = hwMap.servo.get("Claw Servo");
     }
 
     /***
@@ -79,5 +87,3 @@ public class HardwarePushbot {
         period.reset();
     }
 }
-
-
