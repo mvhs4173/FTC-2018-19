@@ -1,16 +1,10 @@
 package org.firstinspires.ftc.teamcode;
-import android.app.Application;
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraCharacteristics;
 
-import org.firstinspires.ftc.robotcore.internal.vuforia.externalprovider.VuforiaWebcam;
-import org.firstinspires.ftc.teamcode.HardwarePushbot;
-
 
 import android.content.Context;
-import android.app.Activity;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

@@ -20,14 +20,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Motor channel:  Left  drive motor:        "left_drive"
  * Motor channel:  Right drive motor:        "right_drive"
  */
-public class HardwarePushbot {
+public class Hardware {
     /* Public OpMode members. */
     //You should use the acronyms for future reference, don't worry, it's fixed//
 
     public DcMotor leftFrontMotor = null;
     public DcMotor rightFrontMotor = null;
-    public DcMotor leftBackMotor = null;
-    public DcMotor rightBackMotor = null;
     public DcMotor collectorMotor = null;
     public DcMotor collectorMotor2 = null;
     public BNO055IMU imu = null;
@@ -38,12 +36,13 @@ public class HardwarePushbot {
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwarePushbot(){
+    public Hardware(){
+
     }
 
-    /* Initialize standard HardwarePushbot interfaces */
+    /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
-        // Save reference to HardwarePushbot map
+        // Save reference to Hardware map
         hwMap = ahwMap;
 
         // Define and Initialize Motors
