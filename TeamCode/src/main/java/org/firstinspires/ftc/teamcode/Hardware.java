@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -26,9 +27,10 @@ public class Hardware
     //You should use the acronyms for future reference, don't worry, it's fixed//
     public DcMotor  leftFrontMotor = null;
     public DcMotor  rightFrontMotor = null;
+    public BNO055IMU imu = null;
 
     /* local OpMode members. */
-    HardwareMap hwMap  =  null;
+    private HardwareMap hwMap  =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
@@ -40,6 +42,8 @@ public class Hardware
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
+
+        imu = hwMap.get(BNO055IMU.class, "imu");
 
         // Define and Initialize Motors
         leftFrontMotor   = hwMap.dcMotor.get("Front Left Motor");
