@@ -22,4 +22,9 @@ public class DriveTrain {
         left.setPower(L);
         right.setPower(R);
     }
+
+    int[] getEncoderPos() {
+        int[] temp = {left.getCurrentPosition(),right.getCurrentPosition()};
+        return temp;
+    }
 }

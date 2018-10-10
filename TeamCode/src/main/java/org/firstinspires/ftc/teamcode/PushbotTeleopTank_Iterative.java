@@ -98,6 +98,8 @@ public class PushbotTeleopTank_Iterative extends OpMode{
 
         // Send telemetry message to signify robot running;
         telemetry.addData("Angle", robot.compass.getHeading());
+        telemetry.addData("leftEncoderPosition",driveTrain.getEncoderPos()[0]);
+        telemetry.addData("rightEncoderPosition",driveTrain.getEncoderPos()[1]);
         updateTelemetry(telemetry);
     }
 
