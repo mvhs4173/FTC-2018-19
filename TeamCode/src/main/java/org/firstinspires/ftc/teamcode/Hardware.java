@@ -51,8 +51,8 @@ public class Hardware
         leftFrontMotor   = hwMap.dcMotor.get("Front Left Motor");
         rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
 
-        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
 
     }
 
