@@ -11,6 +11,11 @@ public class DriveTrain {
         right = newRight;
     }
 
+    /**
+     *
+     * @param x They hrizontal value of the jostick
+     * @param y vitiacl
+     */
     void DriveWithJoyStick(double x,double y){
         double
             X=x,
