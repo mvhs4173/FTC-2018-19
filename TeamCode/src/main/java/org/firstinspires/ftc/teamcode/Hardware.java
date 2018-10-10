@@ -28,6 +28,7 @@ public class Hardware
     public DcMotor  leftFrontMotor = null;
     public DcMotor  rightFrontMotor = null;
     public BNO055IMU imu = null;
+    Compass compass = null;
 
     /* local OpMode members. */
     private HardwareMap hwMap  =  null;
@@ -44,6 +45,7 @@ public class Hardware
         hwMap = ahwMap;
 
         imu = hwMap.get(BNO055IMU.class, "imu");
+        compass = new Compass(imu);
 
         // Define and Initialize Motors
         leftFrontMotor   = hwMap.dcMotor.get("Front Left Motor");
