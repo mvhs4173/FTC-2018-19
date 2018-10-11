@@ -40,13 +40,4 @@ public class Gradle {
     private Object sourceSets = null;
 
     private final Object jni;
-
-    {
-        if (sourceSets == null) {
-        }
-    }
-
-    private void file(String s) {
-    }
-
 }
