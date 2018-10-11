@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -27,6 +28,7 @@ public class Hardware {
     public DcMotor rightFrontMotor = null;
     public DcMotor collectorMotor = null;
     public DcMotor collectorMotor2 = null;
+    public DcMotor extensionMotor = null;
     public BNO055IMU imu = null;
     public Servo clawServo = null;
     Compass compass = null;
@@ -53,12 +55,15 @@ public class Hardware {
         rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
 
         collectorMotor = hwMap.dcMotor.get("Collector Motor");
-        collectorMotor2 = hwMap.dcMotor.get("Collector Motor 2");
+        //collectorMotor2 = hwMap.dcMotor.get("Collector Motor 2");
+
+        extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         collectorMotor.setDirection(DcMotor.Direction.FORWARD);
-        collectorMotor2.setDirection(DcMotor.Direction.FORWARD);
+        //collectorMotor2.setDirection(DcMotor.Direction.FORWARD);
+        extensionMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Define and Initialize Servos
         clawServo = hwMap.servo.get("Claw Servo");

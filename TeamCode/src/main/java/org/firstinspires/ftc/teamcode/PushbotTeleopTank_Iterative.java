@@ -57,6 +57,7 @@ public class PushbotTeleopTank_Iterative extends OpMode{
     /* Declare OpMode members. */
     private Hardware robot = new Hardware(); // use the class created to define a Pushbot's hardwar
     private DriveTrain driveTrain = null;
+    private Claw claw = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -68,6 +69,11 @@ public class PushbotTeleopTank_Iterative extends OpMode{
          */
         robot.init(hardwareMap);
         driveTrain = new DriveTrain(robot.leftFrontMotor, robot.rightFrontMotor);
+
+        claw = new Claw(robot.clawServo, robot.extensionMotor);
+        claw.setOrigin(0.4);
+        claw.returnToOrigin();
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Bonjour Monsieur");//
         telemetry.addData("Say", "Tank Drive");//
@@ -95,6 +101,9 @@ public class PushbotTeleopTank_Iterative extends OpMode{
     @Override
     public void loop() {
         driveTrain.DriveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
+
+        if(gamepad1.x) claw.Grip(0.48); //smaller number is more open
+        if(gamepad1.b) claw.Release(0.3);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("Angle", robot.compass.getHeading());
