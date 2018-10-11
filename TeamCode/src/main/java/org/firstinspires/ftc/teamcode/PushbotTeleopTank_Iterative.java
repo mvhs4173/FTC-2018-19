@@ -57,7 +57,7 @@ public class PushbotTeleopTank_Iterative extends OpMode{
     /* Declare OpMode members. */
 
     Hardware robot = new Hardware(); // use the class created to define a Pushbot's hardwar
-    Compass compass = new Compass(robot.imu);
+
 
 
     /*
@@ -96,9 +96,7 @@ public class PushbotTeleopTank_Iterative extends OpMode{
      */
     @Override
     public void loop() {
-        double currentHeading = compass.getHeading();
-        robot.leftFrontMotor.setPower(1);
-        robot.rightFrontMotor.setPower(1);
+        double currentHeading = robot.compass.getHeading();
 
         // Send telemetry message to signify robot running;
         telemetry.addData("Angle", currentHeading);

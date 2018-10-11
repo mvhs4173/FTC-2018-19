@@ -30,6 +30,7 @@ public class Hardware {
     public DcMotor collectorMotor2 = null;
     public BNO055IMU imu = null;
     public Servo clawServo = null;
+    Compass compass = null;
 
     /* local OpMode members. */
     HardwareMap hwMap  =  null;
@@ -47,13 +48,12 @@ public class Hardware {
 
         // Define and Initialize Motors
         leftFrontMotor = hwMap.dcMotor.get("Front Left Motor");
-
+        rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
         imu = hwMap.get(BNO055IMU.class, "imu");
 
-        rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
+        compass = new Compass(imu);
 
         collectorMotor = hwMap.dcMotor.get("Collector Motor");
-
         collectorMotor2 = hwMap.dcMotor.get("Collector Motor 2");
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
