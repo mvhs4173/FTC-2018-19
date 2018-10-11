@@ -55,10 +55,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class PushbotTeleopTank_Iterative extends OpMode{
 
     /* Declare OpMode members. */
-
-    Hardware robot = new Hardware(); // use the class created to define a Pushbot's hardwar
-
-
+    private Hardware robot = new Hardware(); // use the class created to define a Pushbot's hardwar
+    private DriveTrain driveTrain = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -69,7 +67,7 @@ public class PushbotTeleopTank_Iterative extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-
+        driveTrain = new DriveTrain(robot.leftFrontMotor, robot.rightFrontMotor);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Bonjour Monsieur");//
         telemetry.addData("Say", "Tank Drive");//
@@ -96,10 +94,12 @@ public class PushbotTeleopTank_Iterative extends OpMode{
      */
     @Override
     public void loop() {
-        double currentHeading = robot.compass.getHeading();
+        driveTrain.DriveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("Angle", currentHeading);
+        telemetry.addData("Angle", robot.compass.getHeading());
+        telemetry.addData("leftEncoderPosition",driveTrain.getEncoderPos()[0]);
+        telemetry.addData("rightEncoderPosition",driveTrain.getEncoderPos()[1]);
         updateTelemetry(telemetry);
     }
 
