@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  * This class can be used to define all the specific hardware for a single robot.
  * In this case that robot is a Pushbot.
- * See TeleOp1 and others classes starting with "Pushbot" for usage examples.
+ * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
  *
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
@@ -23,16 +23,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Hardware {
     /* Public OpMode members. */
     //You should use the acronyms for future reference, don't worry, it's fixed//
-
     public DcMotor leftFrontMotor = null;
     public DcMotor rightFrontMotor = null;
     public DcMotor collectorMotor = null;
     public DcMotor collectorMotor2 = null;
     public BNO055IMU imu = null;
     public Servo clawServo = null;
+    Compass compass = null;
 
     /* local OpMode members. */
-    HardwareMap hwMap  =  null;
+    private HardwareMap hwMap  =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
@@ -45,15 +45,14 @@ public class Hardware {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
+        imu = hwMap.get(BNO055IMU.class, "imu");
+        compass = new Compass(imu);
+
         // Define and Initialize Motors
         leftFrontMotor = hwMap.dcMotor.get("Front Left Motor");
-
-        imu = hwMap.get(BNO055IMU.class, "imu");
-
         rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
 
         collectorMotor = hwMap.dcMotor.get("Collector Motor");
-
         collectorMotor2 = hwMap.dcMotor.get("Collector Motor 2");
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
