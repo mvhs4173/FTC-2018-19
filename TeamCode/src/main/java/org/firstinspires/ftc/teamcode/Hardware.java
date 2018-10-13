@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  * This class can be used to define all the specific hardware for a single robot.
  * In this case that robot is a Pushbot.
- * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
+ * See Testing_TeleOp and others classes starting with "Pushbot" for usage examples.
  *
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
@@ -51,12 +51,10 @@ public class Hardware {
         compass = new Compass(imu);
 
         // Define and Initialize Motors
-        leftFrontMotor = hwMap.dcMotor.get("Front Left Motor");
-        rightFrontMotor  = hwMap.dcMotor.get("Front Right Motor");
-
+        leftFrontMotor = hwMap.dcMotor.get("Left Motor");
+        rightFrontMotor  = hwMap.dcMotor.get("Right Motor");
         collectorMotor = hwMap.dcMotor.get("Collector Motor");
         //collectorMotor2 = hwMap.dcMotor.get("Collector Motor 2");
-
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);

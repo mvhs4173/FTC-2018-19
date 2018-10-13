@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
 //@Disabled
-public class PushbotTeleopTank_Iterative extends OpMode{
+public class Testing_TeleOp extends OpMode{
 
     /* Declare OpMode members. */
     private Hardware robot = new Hardware(); // use the class created to define a Pushbot's hardwar
@@ -102,8 +102,9 @@ public class PushbotTeleopTank_Iterative extends OpMode{
     public void loop() {
         driveTrain.DriveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
-        if(gamepad1.x) claw.Grip(0.48); //smaller number is more open
-        if(gamepad1.b) claw.Release(0.3);
+        if(gamepad1.x) claw.Grip(); //smaller number is more open
+        if(gamepad1.b) claw.Release();
+        claw.moveServo(gamepad1.a, gamepad1.y);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("Angle", robot.compass.getHeading());
