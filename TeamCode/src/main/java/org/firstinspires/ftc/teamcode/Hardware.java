@@ -53,8 +53,8 @@ public class Hardware {
         // Define and Initialize Motors
         leftFrontMotor = hwMap.dcMotor.get("Left Motor");
         rightFrontMotor  = hwMap.dcMotor.get("Right Motor");
-        collectorMotor = hwMap.dcMotor.get("Collector Motor");
-        //collectorMotor2 = hwMap.dcMotor.get("Collector Motor 2");
+        collectorMotor = hwMap.dcMotor.get("CollectorArm Motor");
+        //collectorMotor2 = hwMap.dcMotor.get("CollectorArm Motor 2");
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
