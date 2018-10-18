@@ -118,6 +118,8 @@ import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
 import org.firstinspires.ftc.robotcore.internal.webserver.WebServer;
 import org.firstinspires.inspection.RcInspectionActivity;
+import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.JavaCamera2View;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -167,6 +169,14 @@ public class FtcRobotControllerActivity extends Activity
   protected WifiMuteStateMachine wifiMuteStateMachine;
   protected MotionDetection motionDetection;
 
+
+  ///////Vision Processing////////
+      public static CameraBridgeViewBase cameraViewBase = null;
+
+       void visionInit() {
+          cameraViewBase = (JavaCamera2View) findViewById(R.id.show_camera_activity_java_surface_view);
+      }
+
   protected class RobotRestarter implements Restarter {
 
     public void requestRestart() {
@@ -187,6 +197,8 @@ public class FtcRobotControllerActivity extends Activity
       RobotLog.vv(FtcRobotControllerService.TAG, "%s.controllerService=null", TAG);
       controllerService = null;
     }
+
+
   };
 
   @Override
@@ -232,6 +244,10 @@ public class FtcRobotControllerActivity extends Activity
     RobotLog.onApplicationStart();  // robustify against onCreate() following onDestroy() but using the same app instance, which apparently does happen
     RobotLog.vv(TAG, "onCreate()");
     ThemedActivity.appAppThemeToActivity(getTag(), this); // do this way instead of inherit to help AppInventor
+
+      //////VISION PROCESSING/////////
+      visionInit();
+      /////////VISION END/////////////
 
     // Oddly, sometimes after a crash & restart the root activity will be something unexpected, like from the before crash? We don't yet understand
     RobotLog.vv(TAG, "rootActivity is of class %s", AppUtil.getInstance().getRootActivity().getClass().getSimpleName());
