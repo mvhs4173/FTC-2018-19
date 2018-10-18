@@ -57,21 +57,22 @@ public class Hardware {
         armMotor = hwMap.dcMotor.get("Arm Motor");
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
+        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);
+        collectorMotor.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setDirection(DcMotor.Direction.FORWARD);
+        extensionMotor.setDirection(DcMotor.Direction.FORWARD);
+
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         collectorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftMotor.setDirection(DcMotor.Direction.FORWARD);
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        collectorMotor.setDirection(DcMotor.Direction.FORWARD);
         collectorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armMotor.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extensionMotor.setDirection(DcMotor.Direction.FORWARD);
         extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and Initialize Servos

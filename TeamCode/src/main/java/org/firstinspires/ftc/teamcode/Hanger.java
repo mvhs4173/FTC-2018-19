@@ -22,8 +22,8 @@ public class Hanger {
 
     /**
      *
-     * @param hookServo servo to controll the grasping
-     * @param extensionMotor
+     * @param hookServo servo to control the grasping
+     * @param extensionMotor motor to control the extension
      */
     public Hanger(Servo hookServo,
                   DcMotor extensionMotor,
@@ -82,15 +82,20 @@ public class Hanger {
         extensionMotor.setPower(0);
     }
 
-    public void hang(){
+    public boolean hang(){
+        Timer psi = new Timer();
         extendHook();
         if (stopExtender.getState() == true){
             stopHook();
             grip();
+            psi.init(1);
         }
+        if (psi.isTimerUp()) {
+            return retractHook();
+        } else return false;
     }
 
-    public void drop(){
+    public boolean drop(){
         Timer pi = new Timer();
         extendHook();
         if (stopExtender.getState() == true){
@@ -98,10 +103,20 @@ public class Hanger {
             release();
             pi.init(1);
         }
-        if (pi.isTimerUp()) retractHook();
+        if (pi.isTimerUp()) {
+            return retractHook();
+        } else return false;
     }
 
-    private void retractHook() {
-
+    private boolean retractHook() {
+        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        int target = 0;
+        int error = extensionMotor.getCurrentPosition() - target;
+        extensionMotor.setTargetPosition(target);
+        extensionMotor.setPower(0.5*error);
+        if (error == 0){
+            extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            return true;
+        } else return false;
     }
 }

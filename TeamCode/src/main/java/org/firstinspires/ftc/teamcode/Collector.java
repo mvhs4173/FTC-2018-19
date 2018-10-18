@@ -42,23 +42,38 @@ public class Collector {
         armMotor.setTargetPosition(this.targetPosition);
     }
 
-    public void runArmToGather() {
-        setElbowTargetPosition(0);
-        currentPosition = armMotor.getCurrentPosition();
-        error = this.targetPosition - currentPosition;
-        armMotor.setPower(0.5*error);
-        if (currentPosition == targetPosition) stopArmMotor();
+    /**
+     *
+     * @param position GATHER or DISPENSE
+     */
+    public void runArmToPosition(Positions position) {
+        switch (position) {
+            case GATHER:
+                setElbowTargetPosition(0);
+                currentPosition = armMotor.getCurrentPosition();
+                error = this.targetPosition - currentPosition;
+                armMotor.setPower(0.5 * error);
+                if (currentPosition == targetPosition) stopArmMotor();
+                break;
+            case DISPENSE:
+                setElbowTargetPosition(4000);
+                currentPosition = armMotor.getCurrentPosition();
+                error = this.targetPosition - currentPosition;
+                armMotor.setPower(0.5*error);
+                if (currentPosition == targetPosition) stopArmMotor();
+                break;
+            default:
+                stopArmMotor();
+                break;
+        }
     }
 
-    public void runArmToDispence(){
-        setElbowTargetPosition(4000);
-        currentPosition = armMotor.getCurrentPosition();
-        error = this.targetPosition - currentPosition;
-        armMotor.setPower(0.5*error);
-        if (currentPosition == targetPosition) stopArmMotor();
-    }
-
-    public int getCurerntPosition(){
+    public int getCurrentPosition(){
         return armMotor.getCurrentPosition();
+    }
+
+    enum Positions {
+        GATHER,
+        DISPENSE
     }
 }
