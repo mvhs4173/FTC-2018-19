@@ -3,35 +3,40 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class CollectorArm {
-    private DcMotor elbowMotor;
+    private DcMotor armMotor;
     private int targetPosition,
                     currentPosition,
                     error;
 
+    /**
+     *
+     * @param collectorMotor motor to run the collector
+     * @param armMotor motor to move the arm
+     */
     public CollectorArm(DcMotor collectorMotor,
-                        DcMotor collectorMotor2) {
-        this.elbowMotor = collectorMotor;
-        elbowMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        DcMotor armMotor) {
+        this.armMotor = collectorMotor;
+        this.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 
-    public void ArmMotor(double inputPower) {
-        elbowMotor.setPower(inputPower);
+    public void moveArmMotorAtPower(double inputPower) {
+        armMotor.setPower(inputPower);
     }
 
     public void stopMotor() {
-        elbowMotor.setPower(0);
+        armMotor.setPower(0);
     }
 
     public void setElbowTargetPosition(int targetPosition) {
         this.targetPosition = targetPosition;
-        elbowMotor.setTargetPosition(this.targetPosition);
+        armMotor.setTargetPosition(this.targetPosition);
     }
 
     public void runMotor() {
-        currentPosition = elbowMotor.getCurrentPosition();
+        currentPosition = armMotor.getCurrentPosition();
         error = targetPosition - currentPosition;
-        elbowMotor.setPower(0.5*error);
+        armMotor.setPower(0.5*error);
     }
 
 }

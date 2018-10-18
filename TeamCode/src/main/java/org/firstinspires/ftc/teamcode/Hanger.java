@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 /*
 Use of the 3 positions: open, closed and starting point to fit in the box
-Sets position of the claw on a scale of 0 to 1
-Sets claw to starting position (setOrigin)
-When moved from origin, code allows claw to return to the starting position
+Sets position of the hanger on a scale of 0 to 1
+Sets hanger to starting position (setOrigin)
+When moved from origin, code allows hanger to return to the starting position
  */
 
-public class Claw {
+public class Hanger {
     private Servo clawServo;
     private DcMotor extensionMotor;
     private RogersButton decreaseValue,
@@ -18,11 +18,16 @@ public class Claw {
     double origin = 0.4;
     private double currentPos;
 
-    public Claw(Servo clawServo,
-                DcMotor extensionMotor) {
+    /**
+     *
+     * @param hookServo servo to controll the grasping
+     * @param extensionMotor
+     */
+    public Hanger(Servo hookServo,
+                  DcMotor extensionMotor) {
         decreaseValue = new RogersButton();
         increaseValue = new RogersButton();
-        this.clawServo = clawServo;
+        this.clawServo = hookServo;
         this.extensionMotor = extensionMotor;
         currentPos = origin;
     }

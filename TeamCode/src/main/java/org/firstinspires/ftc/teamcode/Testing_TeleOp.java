@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * All device access is managed through the Hardware class.
  *
  * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
- * It raises and lowers the claw using the Gampad Y and A buttons respectively.
+ * It raises and lowers the hanger using the Gampad Y and A buttons respectively.
  * It also opens and closes the claws slowly using the left and right Bumper buttons.
  *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
@@ -57,7 +57,7 @@ public class Testing_TeleOp extends OpMode{
     /* Declare OpMode members. */
     private Hardware robot = new Hardware(); // use the class created to define a Pushbot's hardwar
     private DriveTrain driveTrain = null;
-    private Claw claw = null;
+    private Hanger hanger = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -68,11 +68,11 @@ public class Testing_TeleOp extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-        driveTrain = new DriveTrain(robot.leftFrontMotor, robot.rightFrontMotor);
+        driveTrain = new DriveTrain(robot.leftMotor, robot.rightMotor);
 
-        claw = new Claw(robot.clawServo, robot.extensionMotor);
-        claw.setOrigin(0.4);
-        claw.returnToOrigin();
+        hanger = new Hanger(robot.hookServo, robot.extensionMotor);
+        hanger.setOrigin(0.4);
+        hanger.returnToOrigin();
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Bonjour Monsieur");//
@@ -102,9 +102,9 @@ public class Testing_TeleOp extends OpMode{
     public void loop() {
         driveTrain.DriveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
-        if(gamepad1.x) claw.Grip(); //smaller number is more open
-        if(gamepad1.b) claw.Release();
-        claw.moveServo(gamepad1.a, gamepad1.y);
+        if(gamepad1.x) hanger.Grip(); //smaller number is more open
+        if(gamepad1.b) hanger.Release();
+        hanger.moveServo(gamepad1.a, gamepad1.y);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("Angle", robot.compass.getHeading());

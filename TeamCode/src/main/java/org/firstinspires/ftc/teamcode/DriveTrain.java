@@ -5,9 +5,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class DriveTrain {
     DcMotor left, right;
 
-
-    DriveTrain(DcMotor newFront, DcMotor newRight){
-        left = newFront;
+    /**
+     * \
+     * @param newLeft Left Motor
+     * @param newRight Right Motor
+     */
+    DriveTrain(DcMotor newLeft, DcMotor newRight){
+        left = newLeft;
         right = newRight;
     }
 

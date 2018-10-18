@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,13 +22,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Hardware {
     /* Public OpMode members. */
     //You should use the acronyms for future reference, don't worry, it's fixed//
-    public DcMotor leftFrontMotor = null;
-    public DcMotor rightFrontMotor = null;
+    public DcMotor leftMotor = null;
+    public DcMotor rightMotor = null;
     public DcMotor collectorMotor = null;
-    public DcMotor collectorMotor2 = null;
+    public DcMotor armMotor = null;
     public DcMotor extensionMotor = null;
     public BNO055IMU imu = null;
-    public Servo clawServo = null;
+    public Servo hookServo = null;
     Compass compass = null;
 
     /* local OpMode members. */
@@ -51,20 +49,20 @@ public class Hardware {
         compass = new Compass(imu);
 
         // Define and Initialize Motors
-        leftFrontMotor = hwMap.dcMotor.get("Left Motor");
-        rightFrontMotor  = hwMap.dcMotor.get("Right Motor");
-        collectorMotor = hwMap.dcMotor.get("CollectorArm Motor");
-        //collectorMotor2 = hwMap.dcMotor.get("CollectorArm Motor 2");
+        leftMotor = hwMap.dcMotor.get("Left Motor");
+        rightMotor = hwMap.dcMotor.get("Right Motor");
+        collectorMotor = hwMap.dcMotor.get("Collector Motor");
+        armMotor = hwMap.dcMotor.get("Arm Motor");
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
-        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);
         collectorMotor.setDirection(DcMotor.Direction.FORWARD);
-        //collectorMotor2.setDirection(DcMotor.Direction.FORWARD);
+        //armMotor.setDirection(DcMotor.Direction.FORWARD);
         extensionMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Define and Initialize Servos
-        clawServo = hwMap.servo.get("Claw Servo");
+        hookServo = hwMap.servo.get("Hanger Servo");
     }
 
     /***
