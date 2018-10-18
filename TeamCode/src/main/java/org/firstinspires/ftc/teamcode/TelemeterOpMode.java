@@ -36,5 +36,6 @@ public class TelemeterOpMode extends OpMode {
         if (gather.wasJustClicked(gamepad1.a)) collector.runArmToPosition(Collector.Positions.GATHER);
         if (dispense.wasJustClicked(gamepad1.y)) collector.runArmToPosition(Collector.Positions.DISPENSE);
         telemetry.addData("Motor Position", collector.getCurrentPosition());
+        telemetry.update();
     }
 }

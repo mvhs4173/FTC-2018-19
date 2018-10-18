@@ -10,6 +10,6 @@ public class Vision {
 
     public Vision() {
 
-        viewBase = (JavaCamera2View) FtcRobotControllerActivity.cameraViewBase;
+        //viewBase = (JavaCamera2View) FtcRobotControllerActivity.cameraViewBase;
     }
 }
