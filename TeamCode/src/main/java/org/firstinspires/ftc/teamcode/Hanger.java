@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 /*
 Use of the 3 positions: open, closed and starting point to fit in the box
-Sets position of the hanger on a scale of 0 to 1
+Sets position of the hanger on up scale of 0 to 1
 Sets hanger to starting position (setOrigin)
 When moved from origin, code allows hanger to return to the starting position
  */
@@ -36,7 +36,7 @@ public class Hanger {
         currentPos = origin;
     }
 
-    public void Grip() {
+    public void grip() {
         currentPos = 0.48;
         clawServo.setPosition(currentPos); // on scale of 0 to 1
     }
@@ -86,7 +86,22 @@ public class Hanger {
         extendHook();
         if (stopExtender.getState() == true){
             stopHook();
-            Grip();
+            grip();
         }
+    }
+
+    public void drop(){
+        Timer pi = new Timer();
+        extendHook();
+        if (stopExtender.getState() == true){
+            stopHook();
+            release();
+            pi.init(1);
+        }
+        if (pi.isTimerUp()) retractHook();
+    }
+
+    private void retractHook() {
+
     }
 }

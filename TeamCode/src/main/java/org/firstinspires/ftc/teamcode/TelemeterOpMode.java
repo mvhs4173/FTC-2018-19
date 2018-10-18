@@ -3,15 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Autonomus", group = "Auto")
+@TeleOp(name = "Main Loop", group = "Auto")
 public class TelemeterOpMode extends OpMode {
     //Objects
     Hardware hardware = new Hardware();
     DriveTrain driveTrain;
     Collector collector;
     Hanger extender;
-    ToggleButton a = new ToggleButton(),
-                 x = new ToggleButton();
+    ToggleButton up = new ToggleButton(), a = new ToggleButton(), y = new ToggleButton();
 
 
 
@@ -25,14 +24,17 @@ public class TelemeterOpMode extends OpMode {
 
     @Override
     public void start(){
-        extender.release();
+        extender.drop();
     }
 
     @Override
     public void loop() {
         driveTrain.driveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        if (a.wasJustClicked(gamepad1.a)) extender.extendHook();
+        if (up.wasJustClicked(gamepad1.dpad_up)) extender.extendHook();
         if (gamepad1.x) collector.runCollector();
-        if (gamepad1.dpad_down) collector.stopCollector();
+        if (gamepad1.b) collector.stopCollector();
+        if (a.wasJustClicked(gamepad1.a)) collector.runArmToGather();
+        if (y.wasJustClicked(gamepad1.y)) collector.runArmToDispence();
+        telemetry.addData("Motor Position", collector.getCurerntPosition());
     }
 }

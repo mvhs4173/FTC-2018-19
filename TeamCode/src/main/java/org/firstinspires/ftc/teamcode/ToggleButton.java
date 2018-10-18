@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 /**
  * Created by robot12 on 11/10/2016.
  */
-// activates when you press a button
+// activates when you press up button
 public class ToggleButton {
     private boolean previous;
 

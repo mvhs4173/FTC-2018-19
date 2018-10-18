@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@Autonomous(name = "Autonomus", group = "Auto")
+@Autonomous(name = "Auto", group = "Auto")
 public class AutonomusOpMode extends OpMode {
     //Objects
     Hardware hardware = new Hardware();
