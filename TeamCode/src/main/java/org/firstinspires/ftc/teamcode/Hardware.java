@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -29,6 +30,7 @@ public class Hardware {
     public DcMotor extensionMotor = null;
     public BNO055IMU imu = null;
     public Servo hookServo = null;
+    public DigitalChannel extenderStop = null;
     Compass compass = null;
 
     /* local OpMode members. */
@@ -56,13 +58,19 @@ public class Hardware {
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         collectorMotor.setDirection(DcMotor.Direction.FORWARD);
-        //armMotor.setDirection(DcMotor.Direction.FORWARD);
+        collectorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         extensionMotor.setDirection(DcMotor.Direction.FORWARD);
+        extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and Initialize Servos
         hookServo = hwMap.servo.get("Hanger Servo");
+        extenderStop = hwMap.digitalChannel.get("Extender Switch");
     }
 
     /***

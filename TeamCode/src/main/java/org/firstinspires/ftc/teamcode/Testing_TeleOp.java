@@ -100,10 +100,10 @@ public class Testing_TeleOp extends OpMode{
      */
     @Override
     public void loop() {
-        driveTrain.DriveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        driveTrain.driveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
 
         if(gamepad1.x) hanger.Grip(); //smaller number is more open
-        if(gamepad1.b) hanger.Release();
+        if(gamepad1.b) hanger.release();
         hanger.moveServo(gamepad1.a, gamepad1.y);
 
         // Send telemetry message to signify robot running;

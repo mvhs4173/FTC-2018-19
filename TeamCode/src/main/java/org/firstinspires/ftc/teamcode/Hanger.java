@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /*
@@ -13,8 +14,9 @@ When moved from origin, code allows hanger to return to the starting position
 public class Hanger {
     private Servo clawServo;
     private DcMotor extensionMotor;
-    private RogersButton decreaseValue,
+    private ToggleButton decreaseValue,
                          increaseValue;
+    private DigitalChannel stopExtender;
     double origin = 0.4;
     private double currentPos;
 
@@ -24,11 +26,13 @@ public class Hanger {
      * @param extensionMotor
      */
     public Hanger(Servo hookServo,
-                  DcMotor extensionMotor) {
-        decreaseValue = new RogersButton();
-        increaseValue = new RogersButton();
+                  DcMotor extensionMotor,
+                  DigitalChannel stopExtender) {
+        decreaseValue = new ToggleButton();
+        increaseValue = new ToggleButton();
         this.clawServo = hookServo;
         this.extensionMotor = extensionMotor;
+        this.stopExtender = stopExtender;
         currentPos = origin;
     }
 
@@ -45,7 +49,7 @@ public class Hanger {
         clawServo.setPosition(origin);
     }
 
-    public void Release() {
+    public void release() {
         currentPos = 0.3;
         clawServo.setPosition(currentPos);
     }
@@ -68,5 +72,21 @@ public class Hanger {
         }
         clawServo.setPosition(currentPos);
 
+    }
+
+    public void extendHook(){
+        extensionMotor.setPower(1);
+    }
+
+    public void stopHook(){
+        extensionMotor.setPower(0);
+    }
+
+    public void hang(){
+        extendHook();
+        if (stopExtender.getState() == true){
+            stopHook();
+            Grip();
+        }
     }
 }
