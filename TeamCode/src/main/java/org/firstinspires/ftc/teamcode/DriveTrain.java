@@ -20,7 +20,7 @@ public class DriveTrain {
      * @param x They hrizontal value of the jostick
      * @param y vitiacl
      */
-    void DriveWithJoyStick(double x,double y){
+    void driveWithJoyStick(double x, double y){
         double
             X=-x,
             Y=y, //Forward on JoyStick is negative

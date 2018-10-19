@@ -8,7 +8,7 @@ public class AutonomusOpMode extends OpMode {
     //Objects
     Hardware hardware = new Hardware();
     DriveTrain driveTrain;
-    CollectorArm collectorArm;
+    Collector collector;
     Hanger hanger;
 
     Vision vision;

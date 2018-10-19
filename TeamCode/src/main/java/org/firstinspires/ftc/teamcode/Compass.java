@@ -39,7 +39,7 @@ public class Compass {
      * @return Returns the current direction in degrees that the robot is facing. Positive means the robot is facing to the right of origin, Negative means its facing to the left of origin
      */
     public double getHeading() {
-        return Degrees.subtract(getRawHeading(), originalRawHeading);//Positive angle is a right turn negative angle is a left turn
+        return Degrees.subtract(getRawHeading(), originalRawHeading);//Positive angle is up right turn negative angle is up left turn
     }
 
     /**
@@ -49,7 +49,7 @@ public class Compass {
     public double getPitch() {
         Orientation angles = compass.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        return Degrees.subtract(angles.thirdAngle, originPitch);//Positive angle is a right pitch negative angle is left pitch
+        return Degrees.subtract(angles.thirdAngle, originPitch);//Positive angle is up right pitch negative angle is left pitch
     }
 
     //Set the current heading to zero
