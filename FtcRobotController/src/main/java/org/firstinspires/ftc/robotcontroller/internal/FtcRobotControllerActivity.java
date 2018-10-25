@@ -50,10 +50,12 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -118,11 +120,21 @@ import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
 import org.firstinspires.ftc.robotcore.internal.webserver.WebServer;
 import org.firstinspires.inspection.RcInspectionActivity;
+import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2View;
+import org.opencv.android.JavaCameraView;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Mat;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import ftc.vision.BeaconProcessor;
+import ftc.vision.FrameGrabber;
+import ftc.vision.ImageProcessor;
+import ftc.vision.ImageProcessorResult;
 
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends Activity
@@ -169,13 +181,80 @@ public class FtcRobotControllerActivity extends Activity
   protected WifiMuteStateMachine wifiMuteStateMachine;
   protected MotionDetection motionDetection;
 
+    static final int FRAME_WIDTH_REQUEST = 176;
+    static final int FRAME_HEIGHT_REQUEST = 144;
+
+    public static FrameGrabber frameGrabber = null;
 
   ///////Vision Processing////////
       public static CameraBridgeViewBase cameraViewBase = null;
 
-       void visionInit() {
+      // Loads camera view of OpenCV for us to use. This lets us see using OpenCV
+
+      void myOnCreate(){
+          getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
           cameraViewBase = (JavaCamera2View) findViewById(R.id.show_camera_activity_java_surface_view);
+          frameGrabber = new FrameGrabber(cameraViewBase, 176, 144);
       }
+
+    public void frameButtonOnClick(View v){
+
+    }
+
+      void myOnPause(){
+          if (cameraViewBase != null) {
+              cameraViewBase.disableView();
+          }
+      }
+
+      void myOnResume(){
+          if (!OpenCVLoader.initDebug()) {
+              Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+              OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+          } else {
+              Log.d(TAG, "OpenCV library found inside package. Using it!");
+              mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+          }
+      }
+
+      public void myOnDestroy() {
+          if (cameraViewBase != null) {
+              cameraViewBase.disableView();
+          }
+      }
+
+      private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+          @Override
+          public void onManagerConnected(int status) {
+              switch (status) {
+                  case LoaderCallbackInterface.SUCCESS:
+                      Log.i(TAG, "OpenCV Manager Connected");
+                      //from now onwards, you can use OpenCV API
+//          Mat m = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
+                      cameraViewBase.enableView();
+                      break;
+                  case LoaderCallbackInterface.INIT_FAILED:
+                      Log.i(TAG, "Init Failed");
+                      break;
+                  case LoaderCallbackInterface.INSTALL_CANCELED:
+                      Log.i(TAG, "Install Cancelled");
+                      break;
+                  case LoaderCallbackInterface.INCOMPATIBLE_MANAGER_VERSION:
+                      Log.i(TAG, "Incompatible Version");
+                      break;
+                  case LoaderCallbackInterface.MARKET_ERROR:
+                      Log.i(TAG, "Market Error");
+                      break;
+                  default:
+                      Log.i(TAG, "OpenCV Manager Install");
+                      super.onManagerConnected(status);
+                      break;
+              }
+          }
+      };
+
+/////END VISION////////
 
   protected class RobotRestarter implements Restarter {
 
@@ -245,9 +324,7 @@ public class FtcRobotControllerActivity extends Activity
     RobotLog.vv(TAG, "onCreate()");
     ThemedActivity.appAppThemeToActivity(getTag(), this); // do this way instead of inherit to help AppInventor
 
-      //////VISION PROCESSING/////////
-      visionInit();
-      /////////VISION END/////////////
+
 
     // Oddly, sometimes after a crash & restart the root activity will be something unexpected, like from the before crash? We don't yet understand
     RobotLog.vv(TAG, "rootActivity is of class %s", AppUtil.getInstance().getRootActivity().getClass().getSimpleName());
@@ -281,6 +358,10 @@ public class FtcRobotControllerActivity extends Activity
 
     setContentView(R.layout.activity_ftc_controller);
 
+    //////VISION PROCESSING/////////
+    myOnCreate();
+    /////////VISION END/////////////
+
     preferencesHelper = new PreferencesHelper(TAG, context);
     preferencesHelper.writeBooleanPrefIfDifferent(context.getString(R.string.pref_rc_connected), true);
     preferencesHelper.getSharedPreferences().registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
@@ -300,6 +381,8 @@ public class FtcRobotControllerActivity extends Activity
         popupMenu.inflate(R.menu.ftc_robot_controller);
         popupMenu.show();
       }
+
+
     });
 
     BlocksOpMode.setActivityAndWebView(this, (WebView) findViewById(R.id.webViewBlocksRuntime));
@@ -393,12 +476,21 @@ public class FtcRobotControllerActivity extends Activity
   @Override
   protected void onResume() {
     super.onResume();
+
+    /////////VISION/////////
+      myOnResume();
+      ///////END VISION///////
     RobotLog.vv(TAG, "onResume()");
   }
 
   @Override
   protected void onPause() {
     super.onPause();
+
+    //////VISION//////
+      myOnPause();
+      //////END VISION/////
+
     RobotLog.vv(TAG, "onPause()");
     if (programmingModeController.isActive()) {
       programmingModeController.stopProgrammingMode();
@@ -410,12 +502,18 @@ public class FtcRobotControllerActivity extends Activity
     // Note: this gets called even when the configuration editor is launched. That is, it gets
     // called surprisingly often. So, we don't actually do much here.
     super.onStop();
+
     RobotLog.vv(TAG, "onStop()");
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
+
+    ///VISION/////
+      myOnDestroy();
+      //////END VISION/////
+
     RobotLog.vv(TAG, "onDestroy()");
 
     shutdownRobot();  // Ensure the robot is put away to bed

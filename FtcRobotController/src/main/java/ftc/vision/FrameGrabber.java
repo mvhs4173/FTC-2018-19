@@ -4,13 +4,22 @@ import android.view.SurfaceView;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 
-public class FrameGrabber implements
-        CameraBridgeViewBase.CvCameraViewListener2 {
+import static org.opencv.core.CvType.CV_32FC3;
 
-    public FrameGrabber(CameraBridgeViewBase c) {
-        c.setVisibility(SurfaceView.VISIBLE);
-        c.setCvCameraViewListener(this);
+/**
+ * Created by vandejd1 on 8/30/16.
+ * FTC Team EV 7393
+ */
+public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 {
+    public FrameGrabber(CameraBridgeViewBase cameraBridgeViewBase, int frameWidth, int frameHeight) {
+
+        cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
+        cameraBridgeViewBase.setMinimumWidth(frameWidth);
+        cameraBridgeViewBase.setMinimumHeight(frameHeight);
+        cameraBridgeViewBase.setMaxFrameSize(frameWidth, frameHeight);
+        cameraBridgeViewBase.setCvCameraViewListener(this);
     }
 
     @Override
@@ -25,6 +34,8 @@ public class FrameGrabber implements
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        return inputFrame.rgba();
+        Mat image = inputFrame.rgba();
+        Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2BGR);
+        return image;
     }
 }

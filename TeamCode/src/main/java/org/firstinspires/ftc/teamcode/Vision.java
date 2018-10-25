@@ -4,6 +4,8 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2View;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
+import ftc.vision.FrameGrabber;
+
 
 public class Vision {
     CameraBridgeViewBase viewBase;

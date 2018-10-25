@@ -7,17 +7,19 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 public class AutonomousOpMode extends OpMode {
     //Objects
     Hardware hardware = new Hardware();
-    DriveTrain driveTrain;
-    Collector collector;
-    Hanger hanger;
+    DriveTrain DriveTrain;
+    Collector Collector;
+    Hanger Hanger;
 
-    @Override
+    Vision vision;
+
     public void init() {
-        hardware.init(hardwareMap);
+        //hardware.init(hardwareMap);
     }
 
-    @Override
     public void loop() {
-
+        if (vision == null) {
+            vision = new Vision();
+        }
     }
 }
