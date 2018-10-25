@@ -4,8 +4,7 @@ package org.firstinspires.ftc.teamcode;
  * Created by ROBOT18 on 11/7/2017.
  */
 
-public class Timer
-{
+public class Timer {
     private double startTime;
     private double seconds;
     private boolean initialized;
@@ -13,8 +12,8 @@ public class Timer
     public Timer(){
         initialized = false;
     }
+
     /**
-     *
      * @param seconds how long the timer should run
      */
     public void init(double seconds){
@@ -24,7 +23,6 @@ public class Timer
     }
 
     /**
-     *
      * @return true when timer is done
      */
     public boolean isTimerUp(){
@@ -35,5 +33,4 @@ public class Timer
     public void disable(){
         initialized = false;
     }
-
 }

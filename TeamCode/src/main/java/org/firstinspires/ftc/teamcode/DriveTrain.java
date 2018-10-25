@@ -6,7 +6,6 @@ public class DriveTrain {
     DcMotor left, right;
 
     /**
-     * \
      * @param newLeft Left Motor
      * @param newRight Right Motor
      */
@@ -16,9 +15,8 @@ public class DriveTrain {
     }
 
     /**
-     *
-     * @param x They hrizontal value of the jostick
-     * @param y vitiacl
+     * @param x The horizontal value of the joystick
+     * @param y The vertical value of the joystick
      */
     void driveWithJoyStick(double x, double y){
         double

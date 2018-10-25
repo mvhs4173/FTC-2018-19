@@ -21,7 +21,6 @@ public class Hanger {
     private double currentPos;
 
     /**
-     *
      * @param hookServo servo to control the grasping
      * @param extensionMotor motor to control the extension
      */
@@ -71,7 +70,6 @@ public class Hanger {
             currentPos = 0;
         }
         clawServo.setPosition(currentPos);
-
     }
 
     public void extendHook(){

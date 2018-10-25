@@ -31,6 +31,7 @@ public class Gradle {
         this.jni = jni;
         this.flatDir = flatDir;
         debug = null;
+        storeFile = null;
     }
 
     private Object signingConfigs = null;
@@ -40,4 +41,21 @@ public class Gradle {
     private Object sourceSets = null;
 
     private final Object jni;
+
+    Gradle() {
+        storeFile = null;
+        jni = null;
+        debug = null;
+        flatDir = null;
+    }
+
+    private Object release;
+
+    private final Object storeFile;
+
+    private Object storePassword;
+
+    private Object keyAlias;
+
+    private Object keyPassword;
 }

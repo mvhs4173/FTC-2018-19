@@ -21,7 +21,7 @@ written permission.
 NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
 LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESSFOR A PARTICULAR PURPOSE
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
 FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
@@ -36,26 +36,22 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
- * This file provides basic Telop driving for up Pushbot robot.
+ * This file provides basic TelemetryOp driving for up PushBot robot.
  * The code is structured as an Iterative OpMode
- *
- * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
+ * This OpMode uses the common PushBot hardware class to define the devices on the robot.
  * All device access is managed through the Hardware class.
- *
- * This particular OpMode executes up basic Tank Drive Teleop for up PushBot
- * It raises and lowers the hanger using the Gampad Y and A buttons respectively.
+ * This particular OpMode executes up basic Tank Drive TelemetryOp for up PushBot
+ * It raises and lowers the hanger using the GamePad Y and A buttons respectively.
  * It also opens and closes the claws slowly using the left and right Bumper buttons.
- *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with up new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
+@TeleOp(name="PushBot: TelemetryOp Tank", group="PushBot")
 
-@TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
 //@Disabled
 public class Testing_TeleOp extends OpMode{
-
     /* Declare OpMode members. */
-    private Hardware robot = new Hardware(); // use the class created to define up Pushbot's hardwar
+    private Hardware robot = new Hardware(); // use the class created to define up PushBot's hardware
     private DriveTrain driveTrain = null;
     private Hanger hanger = null;
 
@@ -69,7 +65,6 @@ public class Testing_TeleOp extends OpMode{
          */
         robot.init(hardwareMap);
         driveTrain = new DriveTrain(robot.leftMotor, robot.rightMotor);
-
         hanger = new Hanger(robot.hookServo, robot.extensionMotor, robot.extenderStop);
         hanger.setOrigin(0.4);
         hanger.returnToOrigin();
@@ -86,6 +81,7 @@ public class Testing_TeleOp extends OpMode{
      */
     @Override
     public void init_loop() {
+
     }
 
     /*
@@ -93,6 +89,7 @@ public class Testing_TeleOp extends OpMode{
      */
     @Override
     public void start() {
+
     }
 
     /*
@@ -101,7 +98,6 @@ public class Testing_TeleOp extends OpMode{
     @Override
     public void loop() {
         driveTrain.driveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
-
         if(gamepad1.x) hanger.grip(); //smaller number is more open
         if(gamepad1.b) hanger.release();
         hanger.moveServo(gamepad1.a, gamepad1.y);
@@ -118,6 +114,7 @@ public class Testing_TeleOp extends OpMode{
      */
     @Override
     public void stop() {
+
     }
 
 }
