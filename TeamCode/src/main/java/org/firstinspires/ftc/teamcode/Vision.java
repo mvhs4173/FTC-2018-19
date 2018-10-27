@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity
 import ftc.vision.FrameGrabber;
 
 
+@SuppressWarnings("unused")
 public class Vision {
     CameraBridgeViewBase viewBase;
 

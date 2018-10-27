@@ -3,15 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+@SuppressWarnings("unused")
 @Autonomous(name = "Auto", group = "Auto")
 public class AutonomousOpMode extends OpMode {
     //Objects
     Hardware hardware = new Hardware();
-    DriveTrain DriveTrain;
-    Collector Collector;
-    Hanger Hanger;
+    private DriveTrain DriveTrain;
+    private Collector Collector;
+    private Hanger Hanger;
 
-    Vision vision;
+    private Vision vision;
 
     public void init() {
         //hardware.init(hardwareMap);

@@ -11,13 +11,14 @@ Sets hanger to starting position (setOrigin)
 When moved from origin, code allows hanger to return to the starting position
  */
 
+@SuppressWarnings({"UnusedReturnValue"})
 public class Hanger {
     private Servo clawServo;
     private DcMotor extensionMotor;
     private ToggleButton decreaseValue,
                          increaseValue;
     private DigitalChannel stopExtender;
-    double origin = 0.4;
+    private double origin = 0.48;
     private double currentPos;
     private DigitalChannel lowerLim;
 
@@ -25,10 +26,10 @@ public class Hanger {
      * @param hookServo servo to control the grasping
      * @param extensionMotor motor to control the extension
      */
-    public Hanger(Servo hookServo,
-                  DcMotor extensionMotor,
-                  DigitalChannel stopExtender,
-                  DigitalChannel lowerLim) {
+    Hanger(Servo hookServo,
+           DcMotor extensionMotor,
+           DigitalChannel stopExtender,
+           DigitalChannel lowerLim) {
         decreaseValue = new ToggleButton();
         increaseValue = new ToggleButton();
         this.clawServo = hookServo;
@@ -75,38 +76,34 @@ public class Hanger {
         clawServo.setPosition(currentPos);
     }
 
-    public void extendHook(){
+    private void extendHook(){
         extensionMotor.setPower(1);
     }
 
-    public void stopHook(){
+    private void stopHook(){
         extensionMotor.setPower(0);
     }
 
-    public boolean hang(){
+    public boolean hang() {
         Timer psi = new Timer();
         extendHook();
-        if (stopExtender.getState() == true){
+        if (stopExtender.getState()) {
             stopHook();
             grip();
             psi.init(1);
         }
-        if (psi.isTimerUp()) {
-            return retractHook();
-        } else return false;
+        return psi.isTimerUp() && retractHook();
     }
 
-    public boolean drop(){
+    public boolean drop() {
         Timer pi = new Timer();
         extendHook();
-        if (stopExtender.getState() == true){
+        if (stopExtender.getState()) {
             stopHook();
             release();
             pi.init(1);
         }
-        if (pi.isTimerUp()) {
-            return retractHook();
-        } else return false;
+        return pi.isTimerUp() && retractHook();
     }
 
     private boolean retractHook() {
@@ -115,9 +112,14 @@ public class Hanger {
         int error = extensionMotor.getCurrentPosition() - target;
         extensionMotor.setTargetPosition(target);
         extensionMotor.setPower(0.5*error);
-        if ((error == 0) || (lowerLim.getState() == true)){
+        if ((error == 0) || (lowerLim.getState())){
+            stopHook();
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             return true;
         } else return false;
+    }
+
+    public boolean[] getState(){
+        return new boolean[]{stopExtender.getState(),lowerLim.getState()};
     }
 }

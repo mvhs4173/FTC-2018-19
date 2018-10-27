@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
+@SuppressWarnings("unused")
 public class ColorIdentifier {
     private ColorSensor colorSensor;
 
@@ -11,14 +10,12 @@ public class ColorIdentifier {
         this.colorSensor = colorSensor;
     }
 
-    public int[] getRGB() {
+    private int[] getRGB() {
         int redValue = colorSensor.red();
         int greenValue = colorSensor.green();
         int blueValue = colorSensor.blue();
 
-        int[] RGB = {redValue, greenValue, blueValue};
-
-        return RGB;
+        return new int[]{redValue, greenValue, blueValue};
     }
 
     boolean isRed() {

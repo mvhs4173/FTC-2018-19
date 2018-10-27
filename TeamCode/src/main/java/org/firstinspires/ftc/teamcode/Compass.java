@@ -13,12 +13,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Created by ROBOT16 on 10/31/2017.
  */
 
+@SuppressWarnings("unused")
 public class Compass {
-    BNO055IMU compass;
-    double originalRawHeading = 0;
-    double originPitch = 0;
+    private BNO055IMU compass;
+    private double originalRawHeading = 0;
+    private double originPitch = 0;
 
-    public Compass(BNO055IMU compass) {
+    Compass(BNO055IMU compass) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -74,7 +75,7 @@ public class Compass {
         originPitch = getHeading();
     }
 
-    public double getRawHeading(){
+    private double getRawHeading(){
         Orientation angles = compass.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         return -angles.firstAngle;

@@ -9,7 +9,7 @@ public class Timer {
     private double seconds;
     private boolean initialized;
 
-    public Timer(){
+    Timer(){
         initialized = false;
     }
 
@@ -30,6 +30,7 @@ public class Timer {
         return (!initialized) || (currentTime - startTime >= seconds); //TODO: give error when not initialized
     }
 
+    @SuppressWarnings("unused")
     public void disable(){
         initialized = false;
     }

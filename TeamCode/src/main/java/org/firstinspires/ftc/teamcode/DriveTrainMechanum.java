@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -9,13 +7,14 @@ import com.qualcomm.robotcore.hardware.Gamepad;
  * Created by ROBOT18 on 9/28/2017.
  */
 
+@SuppressWarnings("unused")
 public class DriveTrainMechanum {
-    DcMotor leftFront = null;
-    DcMotor rightFront = null;
-    DcMotor leftRear = null;
-    DcMotor rightRear = null;
-    Gamepad gamepad1 = null;
-    public DriveTrainMechanum(Gamepad newgamepad,
+    private DcMotor leftFront;
+    private DcMotor rightFront;
+    private DcMotor leftRear;
+    private DcMotor rightRear;
+
+    public DriveTrainMechanum(Gamepad newGamePad,
                               DcMotor newLeftFrontMotor,
                               DcMotor newLeftBackMotor,
                               DcMotor newRightFrontMotor,
@@ -24,13 +23,11 @@ public class DriveTrainMechanum {
         rightFront = newRightFrontMotor;
         leftRear = newLeftBackMotor;
         rightRear = newRightBackMotor;
-        gamepad1 = newgamepad;
     }
 
     public void setDrivePower(double x1, double y, double x2){
         double y1 = -y; // the game pad gives a negative number for forward. the math is looking for a positive for forward.
-        double x = x1;
-        double r = Math.hypot(x, y1);
+        double r = Math.hypot(x1, y1);
         double robotAngle = Degrees.atan2(y1, x1) - 35; //Math.PI / 4;
         double rightX = x2*1;
         final double v1 = r * Degrees.cos(robotAngle) + rightX;

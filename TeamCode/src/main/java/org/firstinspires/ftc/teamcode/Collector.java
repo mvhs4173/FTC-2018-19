@@ -4,21 +4,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Collector {
     private DcMotor armMotor,collectorMotor;
-    private int targetPosition,
-                    currentPosition,
-                    error;
+    private int targetPosition;
 
     /**
      * @param collectorMotor motor to run the collector
      * @param armMotor motor to move the arm
      */
-    public Collector(DcMotor collectorMotor,
-                     DcMotor armMotor) {
+    Collector(DcMotor collectorMotor,
+              DcMotor armMotor) {
         this.armMotor = armMotor;
         this.collectorMotor = collectorMotor;
         this.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    @SuppressWarnings("unused")
     public void moveArmMotorAtPower(double inputPower) {
         armMotor.setPower(inputPower);
     }
@@ -27,7 +26,7 @@ public class Collector {
         collectorMotor.setPower(1);
     }
 
-    public void stopArmMotor() {
+    private void stopArmMotor() {
         armMotor.setPower(0);
     }
 
@@ -35,7 +34,7 @@ public class Collector {
         collectorMotor.setPower(0);
     }
 
-    public void setElbowTargetPosition(int targetPosition) {
+    private void setElbowTargetPosition(int targetPosition) {
         this.targetPosition = targetPosition;
         armMotor.setTargetPosition(this.targetPosition);
     }
@@ -47,8 +46,8 @@ public class Collector {
         switch (position) {
             case GATHER:
                 setElbowTargetPosition(0);
-                currentPosition = armMotor.getCurrentPosition();
-                error = this.targetPosition - currentPosition;
+                int currentPosition = armMotor.getCurrentPosition();
+                int error = this.targetPosition - currentPosition;
                 armMotor.setPower(0.5 * error);
                 if (currentPosition == targetPosition) stopArmMotor();
                 break;
@@ -56,7 +55,7 @@ public class Collector {
                 setElbowTargetPosition(4000);
                 currentPosition = armMotor.getCurrentPosition();
                 error = this.targetPosition - currentPosition;
-                armMotor.setPower(0.5*error);
+                armMotor.setPower(0.5* error);
                 if (currentPosition == targetPosition) stopArmMotor();
                 break;
             default:

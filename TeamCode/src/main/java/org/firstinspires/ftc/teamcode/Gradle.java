@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+@SuppressWarnings("unused")
 public class Gradle {
     private final Object flatDir;
 
@@ -18,27 +19,21 @@ public class Gradle {
      * <p>
      * which will pick up this file here. This approach allows makes it easier to integrate
      * updates to the FTC SDK into your code.
-     * @param signingConfigs
-     * @param sourceSets
-     * @param sourceSets1
-     * @param jni
-     * @param flatDir
+     * @param signingConfigs /
+     * @param sourceSets /
+     * @param sourceSets1 /
+     * @param jni /
+     * @param flatDir /
      */
 
     Gradle(Object signingConfigs, Object sourceSets, Object sourceSets1, Object jni, Object flatDir) {
-        this.signingConfigs = signingConfigs;
-        this.sourceSets = sourceSets1;
         this.jni = jni;
         this.flatDir = flatDir;
         debug = null;
         storeFile = null;
     }
 
-    private Object signingConfigs = null;
-
     private final Object debug;
-
-    private Object sourceSets = null;
 
     private final Object jni;
 
