@@ -9,8 +9,7 @@ public class TouchSensor {
         this.touchSensor = touchSensor;
     }
 
-    public boolean OnorOff(){
+    public boolean OnOrOff(){
          return touchSensor.getState();
     }
-
 }

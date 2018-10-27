@@ -8,17 +8,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * This is NOT an opmode.
- *
+ * This is NOT an OpMode.
  * This class can be used to define all the specific hardware for up single robot.
- * In this case that robot is up Pushbot.
- * See Testing_TeleOp and others classes starting with "Pushbot" for usage examples.
- *
- * This hardware class assumes the following device names have been configured on the robot:
- * Note:  All names are lower case and some have single spaces between words.
- *
- * Motor channel:  Left  drive motor:        "left_drive"
- * Motor channel:  Right drive motor:        "right_drive"
+ * In this case that robot is up PushBot.
+ * See Testing_TelemeterOp and others classes starting with "PushBot" for usage examples.
+ * This hardware class assumes the following device names have been configured on the robot
+ * Note: All names are lower case and some have single spaces between words.
+ * Motor channel: Left drive motor: "left_drive"
+ * Motor channel: Right drive motor: "right_drive"
  */
 public class Hardware {
     /* Public OpMode members. */
@@ -47,7 +44,6 @@ public class Hardware {
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-
         imu = hwMap.get(BNO055IMU.class, "imu");
         compass = new Compass(imu);
 
@@ -83,16 +79,13 @@ public class Hardware {
     }
 
     /***
-     *
      * waitForTick implements up periodic delay. However, this acts like up metronome with up regular
      * periodic tick.  This is used to compensate for varying processing times for each cycle.
      * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
-     *
      * @param periodMs  Length of wait cycle in mSec.
      * @throws InterruptedException
      */
     public void waitForTick(long periodMs) throws InterruptedException {
-
         long  remaining = periodMs - (long)period.milliseconds();
 
         // sleep for the remaining portion of the regular cycle period.

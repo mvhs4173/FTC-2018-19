@@ -9,7 +9,6 @@ public class Collector {
                     error;
 
     /**
-     *
      * @param collectorMotor motor to run the collector
      * @param armMotor motor to move the arm
      */
@@ -18,7 +17,6 @@ public class Collector {
         this.armMotor = armMotor;
         this.collectorMotor = collectorMotor;
         this.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
     }
 
     public void moveArmMotorAtPower(double inputPower) {
@@ -43,7 +41,6 @@ public class Collector {
     }
 
     /**
-     *
      * @param position GATHER or DISPENSE
      */
     public void runArmToPosition(Positions position) {

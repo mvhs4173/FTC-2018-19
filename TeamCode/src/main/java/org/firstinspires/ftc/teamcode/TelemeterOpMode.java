@@ -5,14 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Main Loop", group = "Auto")
 public class TelemeterOpMode extends OpMode {
+
     //Objects
     Hardware hardware = new Hardware();
     DriveTrain driveTrain;
     Collector collector;
     Hanger extender;
     ToggleButton up = new ToggleButton(), gather = new ToggleButton(), dispense = new ToggleButton();
-
-
 
     @Override
     public void init() {
