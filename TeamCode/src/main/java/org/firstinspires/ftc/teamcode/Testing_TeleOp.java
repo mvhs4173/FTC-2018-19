@@ -70,7 +70,7 @@ public class Testing_TeleOp extends OpMode{
         robot.init(hardwareMap);
         driveTrain = new DriveTrain(robot.leftMotor, robot.rightMotor);
 
-        hanger = new Hanger(robot.hookServo, robot.extensionMotor, robot.extenderStop);
+        hanger = new Hanger(robot.hookServo, robot.extensionMotor, robot.extenderStop, robot.extenderLowerLim);
         hanger.setOrigin(0.4);
         hanger.returnToOrigin();
 

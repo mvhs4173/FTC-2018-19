@@ -19,7 +19,7 @@ public class TelemeterOpMode extends OpMode {
         hardware.init(hardwareMap);
         driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor);
         collector = new Collector(hardware.collectorMotor, hardware.armMotor);
-        extender = new Hanger(hardware.hookServo, hardware.extensionMotor, hardware.extenderStop);
+        extender = new Hanger(hardware.hookServo, hardware.extensionMotor, hardware.extenderStop, hardware.extenderLowerLim);
     }
 
     @Override

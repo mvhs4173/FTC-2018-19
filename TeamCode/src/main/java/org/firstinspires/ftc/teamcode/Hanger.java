@@ -19,6 +19,7 @@ public class Hanger {
     private DigitalChannel stopExtender;
     double origin = 0.4;
     private double currentPos;
+    private DigitalChannel lowerLim;
 
     /**
      *
@@ -27,12 +28,14 @@ public class Hanger {
      */
     public Hanger(Servo hookServo,
                   DcMotor extensionMotor,
-                  DigitalChannel stopExtender) {
+                  DigitalChannel stopExtender,
+                  DigitalChannel lowerLim) {
         decreaseValue = new ToggleButton();
         increaseValue = new ToggleButton();
         this.clawServo = hookServo;
         this.extensionMotor = extensionMotor;
         this.stopExtender = stopExtender;
+        this.lowerLim = lowerLim;
         currentPos = origin;
     }
 
@@ -114,7 +117,7 @@ public class Hanger {
         int error = extensionMotor.getCurrentPosition() - target;
         extensionMotor.setTargetPosition(target);
         extensionMotor.setPower(0.5*error);
-        if (error == 0){
+        if ((error == 0) || (lowerLim.getState() == true)){
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             return true;
         } else return false;

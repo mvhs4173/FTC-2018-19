@@ -36,6 +36,7 @@ public class Hardware {
     /* local OpMode members. */
     private HardwareMap hwMap  =  null;
     private ElapsedTime period  = new ElapsedTime();
+    public DigitalChannel extenderLowerLim;
 
     /* Constructor */
     public Hardware(){
@@ -78,6 +79,7 @@ public class Hardware {
         // Define and Initialize Servos
         hookServo = hwMap.servo.get("Hanger Servo");
         extenderStop = hwMap.digitalChannel.get("Extender Switch");
+        extenderLowerLim = hwMap.digitalChannel.get("E Lower Lim");
     }
 
     /***
