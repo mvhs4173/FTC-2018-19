@@ -35,7 +35,7 @@ public class Collector {
         collectorMotor.setPower(0);
     }
 
-    public void setElbowTargetPosition(int targetPosition) {
+    private void setElbowTargetPosition(int targetPosition) {
         this.targetPosition = targetPosition;
         armMotor.setTargetPosition(this.targetPosition);
     }

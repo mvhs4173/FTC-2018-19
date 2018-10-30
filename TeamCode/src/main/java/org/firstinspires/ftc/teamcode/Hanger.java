@@ -20,6 +20,7 @@ public class Hanger {
     double origin = 0.4;
     private double currentPos;
     private DigitalChannel lowerLim;
+    public State state;
 
     /**
      * @param hookServo servo to control the grasping
@@ -36,6 +37,7 @@ public class Hanger {
         this.stopExtender = stopExtender;
         this.lowerLim = lowerLim;
         currentPos = origin;
+        state = State.HANGING;
     }
 
     public void grip() {
@@ -86,12 +88,13 @@ public class Hanger {
     public boolean hang(){
         Timer psi = new Timer();
         extendHook();
-        if (stopExtender.getState() == true){
+        if (stopExtender.getState()){
             stopHook();
             grip();
             psi.init(1);
         }
         if (psi.isTimerUp()) {
+            state = State.HANGING;
             return retractHook();
         } else return false;
     }
@@ -99,12 +102,13 @@ public class Hanger {
     public boolean drop(){
         Timer pi = new Timer();
         extendHook();
-        if (stopExtender.getState() == true){
+        if (stopExtender.getState()){
             stopHook();
             release();
             pi.init(1);
         }
         if (pi.isTimerUp()) {
+            state = State.ONFLOOR;
             return retractHook();
         } else return false;
     }
@@ -115,9 +119,15 @@ public class Hanger {
         int error = extensionMotor.getCurrentPosition() - target;
         extensionMotor.setTargetPosition(target);
         extensionMotor.setPower(0.5*error);
-        if ((error == 0) || (lowerLim.getState() == true)){
+        if ((error == 0) || (lowerLim.getState())){
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             return true;
         } else return false;
+    }
+
+    public enum State {
+        HANGING,
+        ONFLOOR,
+        DONE
     }
 }

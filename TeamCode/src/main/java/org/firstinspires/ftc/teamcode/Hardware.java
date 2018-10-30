@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * See Testing_TelemeterOp and others classes starting with "PushBot" for usage examples.
  * This hardware class assumes the following device names have been configured on the robot
  * Note: All names are lower case and some have single spaces between words.
- * Motor channel: Left drive motor: "left_drive"
- * Motor channel: Right drive motor: "right_drive"
+ * Motor channel: Left DRIVE motor: "left_drive"
+ * Motor channel: Right DRIVE motor: "right_drive"
  */
 public class Hardware {
     /* Public OpMode members. */
@@ -50,7 +50,7 @@ public class Hardware {
         // Define and Initialize Motors
         leftMotor = hwMap.dcMotor.get("Left Motor");
         rightMotor = hwMap.dcMotor.get("Right Motor");
-        collectorMotor = hwMap.dcMotor.get("Collector Motor");
+        collectorMotor = hwMap.dcMotor.get("collector Motor");
         armMotor = hwMap.dcMotor.get("Arm Motor");
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
@@ -73,7 +73,7 @@ public class Hardware {
         extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and Initialize Servos
-        hookServo = hwMap.servo.get("Hanger Servo");
+        hookServo = hwMap.servo.get("hanger Servo");
         extenderStop = hwMap.digitalChannel.get("Extender Switch");
         extenderLowerLim = hwMap.digitalChannel.get("E Lower Lim");
     }
