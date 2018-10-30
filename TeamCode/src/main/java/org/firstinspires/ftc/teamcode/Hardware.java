@@ -25,10 +25,13 @@ public class Hardware {
     public DcMotor collectorMotor = null;
     public DcMotor armMotor = null;
     public DcMotor extensionMotor = null;
+    public BNO055IMU imu = null;
     public Servo hookServo = null;
     public DigitalChannel extenderStop = null;
     Compass compass = null;
 
+    /* local OpMode members. */
+    private HardwareMap hwMap  =  null;
     private ElapsedTime period  = new ElapsedTime();
     public DigitalChannel extenderLowerLim;
 
@@ -40,15 +43,16 @@ public class Hardware {
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
-        BNO055IMU imu = ahwMap.get(BNO055IMU.class, "imu");
+        hwMap = ahwMap;
+        imu = hwMap.get(BNO055IMU.class, "imu");
         compass = new Compass(imu);
 
         // Define and Initialize Motors
-        leftMotor = ahwMap.dcMotor.get("Left Motor");
-        rightMotor = ahwMap.dcMotor.get("Right Motor");
-        collectorMotor = ahwMap.dcMotor.get("Collector Motor");
-        armMotor = ahwMap.dcMotor.get("Arm Motor");
-        extensionMotor = ahwMap.dcMotor.get("Extension Motor");
+        leftMotor = hwMap.dcMotor.get("Left Motor");
+        rightMotor = hwMap.dcMotor.get("Right Motor");
+        collectorMotor = hwMap.dcMotor.get("Collector Motor");
+        armMotor = hwMap.dcMotor.get("Arm Motor");
+        extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -69,9 +73,9 @@ public class Hardware {
         extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and Initialize Servos
-        hookServo = ahwMap.servo.get("Hanger Servo");
-        extenderStop = ahwMap.digitalChannel.get("Extender Switch");
-        extenderLowerLim = ahwMap.digitalChannel.get("E Lower Lim");
+        hookServo = hwMap.servo.get("Hanger Servo");
+        extenderStop = hwMap.digitalChannel.get("Extender Switch");
+        extenderLowerLim = hwMap.digitalChannel.get("E Lower Lim");
     }
 
     /***
@@ -79,9 +83,8 @@ public class Hardware {
      * periodic tick.  This is used to compensate for varying processing times for each cycle.
      * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
      * @param periodMs  Length of wait cycle in mSec.
-     * @throws InterruptedException yep
+     * @throws InterruptedException
      */
-    @SuppressWarnings("unused")
     public void waitForTick(long periodMs) throws InterruptedException {
         long  remaining = periodMs - (long)period.milliseconds();
 

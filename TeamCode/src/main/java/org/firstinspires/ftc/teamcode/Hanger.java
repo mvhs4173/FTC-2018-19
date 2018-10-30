@@ -11,7 +11,6 @@ Sets hanger to starting position (setOrigin)
 When moved from origin, code allows hanger to return to the starting position
  */
 
-@SuppressWarnings({"UnusedReturnValue"})
 public class Hanger {
     private Servo clawServo;
     private DcMotor extensionMotor;
@@ -21,6 +20,7 @@ public class Hanger {
     private double origin = 0.48;
     private double currentPos;
     private DigitalChannel lowerLim;
+    public State state;
 
     /**
      * @param hookServo servo to control the grasping
@@ -37,6 +37,7 @@ public class Hanger {
         this.stopExtender = stopExtender;
         this.lowerLim = lowerLim;
         currentPos = origin;
+        state = State.HANGING;
     }
 
     public void grip() {
@@ -76,34 +77,40 @@ public class Hanger {
         clawServo.setPosition(currentPos);
     }
 
-    private void extendHook(){
+    public void extendHook(){
         extensionMotor.setPower(1);
     }
 
-    private void stopHook(){
+    public void stopHook(){
         extensionMotor.setPower(0);
     }
 
-    public boolean hang() {
+    public boolean hang(){
         Timer psi = new Timer();
         extendHook();
-        if (stopExtender.getState()) {
+        if (stopExtender.getState()){
             stopHook();
             grip();
             psi.init(1);
         }
-        return psi.isTimerUp() && retractHook();
+        if (psi.isTimerUp()) {
+            state = State.HANGING;
+            return retractHook();
+        } else return false;
     }
 
     public boolean drop() {
         Timer pi = new Timer();
         extendHook();
-        if (stopExtender.getState()) {
+        if (stopExtender.getState()){
             stopHook();
             release();
             pi.init(1);
         }
-        return pi.isTimerUp() && retractHook();
+        if (pi.isTimerUp()) {
+            state = State.ONFLOOR;
+            return retractHook();
+        } else return false;
     }
 
     private boolean retractHook() {
@@ -113,10 +120,15 @@ public class Hanger {
         extensionMotor.setTargetPosition(target);
         extensionMotor.setPower(0.5*error);
         if ((error == 0) || (lowerLim.getState())){
-            stopHook();
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             return true;
         } else return false;
+    }
+
+    public enum State {
+        HANGING,
+        ONFLOOR,
+        DONE
     }
 
     public boolean[] getState(){
