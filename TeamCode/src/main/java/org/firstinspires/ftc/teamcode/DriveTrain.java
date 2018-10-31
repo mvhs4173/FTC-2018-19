@@ -7,6 +7,9 @@ public class DriveTrain {
     double linePFactor = 0.05;
     double lineAllowableAngleError = 0.1;
     double lineMaxMultiplyNumber = 3;
+    private double wheelDiameter = 4;
+    private double clicksPerRev = 140;
+    private double clicksPerInch = clicksPerRev/(Math.PI*wheelDiameter); // clicks/rev * (inch/rev)^-1
 
     /**
      * @param newLeft Left Motor
@@ -65,19 +68,26 @@ public class DriveTrain {
     /**
      *
      * @param compass compass to use for heading
-     * @param time how long to DRIVE for
+     * @param distance how far to drive in inches
+     * @param desiredHeading in degrees
      */
-    public boolean driveDistance(Compass compass, double time) {
-        Timer timer = new Timer();
-        timer.init(time);
-        double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, 90, compass.getHeading());
-        if (!timer.isTimerUp()) {
-            left.setPower(newMotorSpeeds[0]);
-            right.setPower(newMotorSpeeds[1]);
+    public boolean driveDistance(Compass compass, double distance, double desiredHeading) {
+        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        double[] currentPosition = {getEncoderPos()[0], getEncoderPos()[1]};
+        double[] error = {distance-currentPosition[0],distance-currentPosition[1]};
+        double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, desiredHeading, compass.getHeading());
+        if (error[0] != 0 || error[1] != 0) {
+            left.setTargetPosition((int)(distance*clicksPerInch));
+            right.setTargetPosition((int)(distance*clicksPerInch));
+            left.setPower(newMotorSpeeds[0]*error[0]);
+            right.setPower(newMotorSpeeds[1]*error[1]);
         } else {
             stopMotors();
+            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-        return timer.isTimerUp();
+        return error[0] == 0;
     }
 
     /**
