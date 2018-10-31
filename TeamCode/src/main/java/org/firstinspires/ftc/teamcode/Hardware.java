@@ -27,6 +27,7 @@ public class Hardware {
     public DcMotor extensionMotor = null;
     public BNO055IMU imu = null;
     public Servo hookServo = null;
+    Servo minionServo;
     public DigitalChannel extenderStop = null;
     Compass compass = null;
 
@@ -76,6 +77,8 @@ public class Hardware {
         hookServo = hwMap.servo.get("Hanger Servo");
         extenderStop = hwMap.digitalChannel.get("Extender Switch");
         extenderLowerLim = hwMap.digitalChannel.get("E Lower Lim");
+
+        minionServo = hwMap.servo.get("Minion Servo");
     }
 
     /***

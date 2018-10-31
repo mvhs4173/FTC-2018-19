@@ -78,6 +78,7 @@ public class Hanger {
     }
 
     public void extendHook(){
+        extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         extensionMotor.setPower(1);
     }
 
