@@ -57,19 +57,19 @@ public class AutoPath {
                 if (hanger.drop()) task = Task.DRIVE;
                 break;
             case DRIVE:
-                if (driveTrain.driveDistance(compass, 7.5, 90)) task = Task.FINDGOLD;
+                if (driveTrain.driveDistance(5, 0)) task = Task.FINDGOLD;
                 break;
             case FINDGOLD:
                 samplePosition = SamplePosition.MID;
                 switch (samplePosition){
                     case MID:
-                        if (driveTrain.driveDistance(compass, 17, 90)) task = Task.CLAIM;
+                        if (driveTrain.driveDistance(17, 0)) task = Task.CLAIM;
                         break;
                     case LEFT:
-                        if (driveTrain.driveDistance(compass, 19, 135)) task = Task.CLAIM;
+                        if (driveTrain.driveDistance(24, 45)) task = Task.CLAIM;
                         break;
                     case RIGHT:
-                        if (driveTrain.driveDistance(compass, 19, 45)) task = Task.CLAIM;
+                        if (driveTrain.driveDistance(24, -45)) task = Task.CLAIM;
                         break;
                     default:
                 }
@@ -79,19 +79,42 @@ public class AutoPath {
                     case GOLD:
                         switch (samplePosition){
                             case MID:
-                                if (driveTrain.driveDistance(compass, 34, 90))
+                                if (driveTrain.driveDistance(34, 0))
                                 break;
                             case LEFT:
-                                if (driveTrain.driveDistance(compass, 37, 66.77))
+                                if (driveTrain.driveDistance(38, -26.32))
                                 break;
                             case RIGHT:
-                                if (driveTrain.driveDistance(compass, 37, 113.23))
+                                if (driveTrain.driveDistance(38, 26.32))
                                 break;
                             default:
                         }
                         if (minionArm.release()) task = Task.PARK;
                         break;
                     case SILVER:
+                        switch (samplePosition){
+                            case MID:
+                                driveTrain.driveDistance(0, -135);
+                                driveTrain.driveDistance(24, -135);
+                                driveTrain.driveDistance(0, -90);
+                                driveTrain.driveDistance(34, -90);
+                                driveTrain.driveDistance(0, -135);
+                                driveTrain.driveDistance(48, -135);
+                                break;
+                            case LEFT:
+                                driveTrain.driveDistance(0, -126.88);
+                                driveTrain.driveDistance(84.85, -126.88);
+                                    break;
+                            case RIGHT:
+                                driveTrain.driveDistance(0, -135);
+                                driveTrain.driveDistance(24, -135);
+                                driveTrain.driveDistance(0, -90);
+                                driveTrain.driveDistance(51, -90);
+                                driveTrain.driveDistance(0, -135);
+                                driveTrain.driveDistance(48, -135);
+                                    break;
+                            default:
+                        }
                         if (minionArm.release()) task = Task.PARK;
                         break;
                     default:
@@ -100,9 +123,12 @@ public class AutoPath {
             case PARK:
                 switch (start) {
                     case GOLD:
-                        if (driveTrain.driveDistance(compass, 8*12, -45)) task = Task.DONE;
+                        driveTrain.driveDistance(0,135);
+                        driveTrain.driveDistance(8*12, 135);// task = Task.DONE;
                         break;
                     case SILVER:
+                        driveTrain.driveDistance(0, 45);
+                        driveTrain.driveDistance(96, 45);
                         break;
                     default:
                 }

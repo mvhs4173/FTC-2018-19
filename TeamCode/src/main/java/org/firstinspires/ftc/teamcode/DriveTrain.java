@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class DriveTrain {
     DcMotor left, right;
+    Compass  compass;
     double linePFactor = 0.05;
     double lineAllowableAngleError = 0.1;
     double lineMaxMultiplyNumber = 3;
@@ -15,9 +16,10 @@ public class DriveTrain {
      * @param newLeft Left Motor
      * @param newRight Right Motor
      */
-    DriveTrain(DcMotor newLeft, DcMotor newRight){
+    DriveTrain(DcMotor newLeft, DcMotor newRight, Compass compass){
         left = newLeft;
         right = newRight;
+        this.compass = compass;
     }
 
     /**
@@ -67,11 +69,10 @@ public class DriveTrain {
 
     /**
      *
-     * @param compass compass to use for heading
      * @param distance how far to drive in inches
      * @param desiredHeading in degrees
      */
-    public boolean driveDistance(Compass compass, double distance, double desiredHeading) {
+    public boolean driveDistance(double distance, double desiredHeading) {
         left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         double[] currentPosition = {getEncoderPos()[0], getEncoderPos()[1]};
