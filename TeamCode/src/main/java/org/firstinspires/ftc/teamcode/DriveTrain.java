@@ -23,7 +23,7 @@ public class DriveTrain {
      */
     void driveWithJoyStick(double x, double y){
         double
-            X=-x, //Forward on JoyStick is negative
+            X=x, //Forward on JoyStick is negative
             V=(100-Math.abs(X))*(y /100)+ y,
             W=(100-Math.abs(y))*(X/100)+X,
             L=(V-W)/2,

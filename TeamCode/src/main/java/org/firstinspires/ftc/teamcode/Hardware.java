@@ -22,8 +22,8 @@ public class Hardware {
     //You should use the acronyms for future reference, don't worry, it's fixed//
     public DcMotor leftMotor = null;
     public DcMotor rightMotor = null;
-    public DcMotor collectorMotor = null;
-    public DcMotor armMotor = null;
+    //public DcMotor collectorMotor = null;
+    //public DcMotor armMotor = null;
     public DcMotor extensionMotor = null;
     public BNO055IMU imu = null;
     public Servo hookServo = null;
@@ -50,26 +50,26 @@ public class Hardware {
         // Define and Initialize Motors
         leftMotor = hwMap.dcMotor.get("Left Motor");
         rightMotor = hwMap.dcMotor.get("Right Motor");
-        collectorMotor = hwMap.dcMotor.get("Collector Motor");
-        armMotor = hwMap.dcMotor.get("Arm Motor");
+        //collectorMotor = hwMap.dcMotor.get("Collector Motor");
+        //armMotor = hwMap.dcMotor.get("Arm Motor");
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        collectorMotor.setDirection(DcMotor.Direction.FORWARD);
-        armMotor.setDirection(DcMotor.Direction.FORWARD);
+        //collectorMotor.setDirection(DcMotor.Direction.FORWARD);
+        //armMotor.setDirection(DcMotor.Direction.FORWARD);
         extensionMotor.setDirection(DcMotor.Direction.FORWARD);
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        collectorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //collectorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        collectorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //collectorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and Initialize Servos

@@ -17,7 +17,7 @@ public class Hanger {
     private ToggleButton decreaseValue,
                          increaseValue;
     private DigitalChannel stopExtender;
-    private double origin = 0.48;
+    private double origin = 0.3;
     private double currentPos;
     private DigitalChannel lowerLim;
     public State state;
@@ -41,7 +41,7 @@ public class Hanger {
     }
 
     public void grip() {
-        currentPos = 0.48;
+        currentPos = 0.3;
         clawServo.setPosition(currentPos); // on scale of 0 to 1
     }
 
@@ -54,7 +54,7 @@ public class Hanger {
     }
 
     public void release() {
-        currentPos = 0.3;
+        currentPos = 0.1;
         clawServo.setPosition(currentPos);
     }
 
@@ -88,6 +88,7 @@ public class Hanger {
     public boolean hang(){
         Timer psi = new Timer();
         extendHook();
+        release();
         if (stopExtender.getState()){
             stopHook();
             grip();
@@ -133,5 +134,9 @@ public class Hanger {
 
     public boolean[] getState(){
         return new boolean[]{stopExtender.getState(),lowerLim.getState()};
+    }
+
+    public double getPosition() {
+        return clawServo.getPosition();
     }
 }

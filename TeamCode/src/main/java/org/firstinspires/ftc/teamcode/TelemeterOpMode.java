@@ -11,7 +11,7 @@ public class TelemeterOpMode extends OpMode {
     DriveTrain driveTrain;
     //Collector collector;
     Hanger extender;
-    ToggleButton up = new ToggleButton(), gather = new ToggleButton(), dispense = new ToggleButton();
+    ToggleButton up = new ToggleButton(), down = new ToggleButton(), dispense = new ToggleButton();
 
     @Override
     public void init() {
@@ -23,13 +23,16 @@ public class TelemeterOpMode extends OpMode {
 
     @Override
     public void start(){
-        extender.drop();
+
     }
 
     @Override
     public void loop() {
         driveTrain.driveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
         if (up.wasJustClicked(gamepad1.dpad_up)) extender.hang();
+        if (down.wasJustClicked(gamepad1.dpad_down)) extender.drop();
+        if (gamepad1.dpad_left) extender.release();
+        if (gamepad1.dpad_right) extender.grip();
         //if (gamepad1.x) collector.runCollector();
         //if (gamepad1.b) collector.stopCollector();
         //if (gather.wasJustClicked(gamepad1.a)) collector.runArmToPosition(Collector.Positions.GATHER);
@@ -37,6 +40,7 @@ public class TelemeterOpMode extends OpMode {
         //telemetry.addData("Motor Position", collector.getCurrentPosition());
         telemetry.addData("stop state", extender.getState()[0]);
         telemetry.addData("lower state", extender.getState()[1]);
+        telemetry.addData("POS", extender.getPosition());
         telemetry.update();
     }
 }

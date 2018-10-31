@@ -75,7 +75,7 @@ public class Compass {
         originPitch = getHeading();
     }
 
-    private double getRawHeading(){
+    public double getRawHeading(){
         Orientation angles = compass.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         return -angles.firstAngle;
