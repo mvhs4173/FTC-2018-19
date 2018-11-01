@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
+@SuppressWarnings("unused")
 public class ColourSensor {
-    ColorSensor colorSensor;
+    private ColorSensor colorSensor;
 
 
     public ColourSensor (ColorSensor sensor) {
@@ -14,10 +15,9 @@ public class ColourSensor {
         double green = colorSensor.green();
         double red = colorSensor.red();
         double blue = colorSensor.blue();
-        double[]colours={
+
+        return new double[]{
                 blue,green,red
         };
-
-        return colours;
     }
 }

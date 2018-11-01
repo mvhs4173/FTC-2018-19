@@ -4,17 +4,16 @@ package org.firstinspires.ftc.teamcode;
  * Created by ROBOT18 on 11/7/2017.
  */
 
-public class Timer
-{
+public class Timer {
     private double startTime;
     private double seconds;
     private boolean initialized;
 
-    public Timer(){
+    Timer(){
         initialized = false;
     }
+
     /**
-     *
      * @param seconds how long the timer should run
      */
     public void init(double seconds){
@@ -24,16 +23,18 @@ public class Timer
     }
 
     /**
-     *
      * @return true when timer is done
      */
     public boolean isTimerUp(){
         double currentTime = System.nanoTime() / 1.0E9;
-        return (!initialized) || (currentTime - startTime >= seconds); //TODO: give error when not initialized
+        if(!initialized){
+            return false;
+        } else{
+            return (currentTime - startTime >= seconds);
+        }
     }
 
     public void disable(){
         initialized = false;
     }
-
 }

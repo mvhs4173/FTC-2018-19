@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
  * Created by ROBOT18 on 10/26/2017.
  */
 
+@SuppressWarnings("unused")
 public class Degrees {
 
     static double cos(double x){
@@ -14,14 +15,12 @@ public class Degrees {
         return radiansToDegrees(Math.acos(x));
     }
 
-    public static double degreesToRadians(double deg){
-        double rad = deg*(Math.PI/180);
-        return rad;
+    private static double degreesToRadians(double deg){
+        return deg*(Math.PI/180);
     }
 
-    public static double radiansToDegrees(double rad){
-        double deg = rad*(180/Math.PI);
-        return deg;
+    private static double radiansToDegrees(double rad){
+        return rad*(180/Math.PI);
     }
 
     public static double sin(double x) {
