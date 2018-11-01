@@ -11,14 +11,16 @@ public class TelemeterOpMode extends OpMode {
     DriveTrain driveTrain;
     //Collector collector;
     Hanger extender;
+    MarkerArm markerArm;
     ToggleButton up = new ToggleButton(), down = new ToggleButton(), dispense = new ToggleButton();
 
     @Override
     public void init() {
         hardware.init(hardwareMap);
-        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor);
+        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.compass);
         //collector = new Collector(hardware.collectorMotor, hardware.armMotor);
         extender = new Hanger(hardware.hookServo, hardware.extensionMotor, hardware.extenderStop, hardware.extenderLowerLim);
+        markerArm = new MarkerArm(hardware.markerServo);
     }
 
     @Override
@@ -29,10 +31,16 @@ public class TelemeterOpMode extends OpMode {
     @Override
     public void loop() {
         driveTrain.driveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        if (up.wasJustClicked(gamepad1.dpad_up)) extender.hang();
-        if (down.wasJustClicked(gamepad1.dpad_down)) extender.drop();
+        if (gamepad1.dpad_up) {
+            extender.hang();
+        } else if (gamepad1.dpad_down){
+            extender.drop();
+        } else {
+            extender.stopHook();
+        }
         if (gamepad1.dpad_left) extender.release();
         if (gamepad1.dpad_right) extender.grip();
+        if (gamepad1.a) markerArm.release();
         //if (gamepad1.x) collector.runCollector();
         //if (gamepad1.b) collector.stopCollector();
         //if (gather.wasJustClicked(gamepad1.a)) collector.runArmToPosition(Collector.Positions.GATHER);
@@ -41,6 +49,8 @@ public class TelemeterOpMode extends OpMode {
         telemetry.addData("stop state", extender.getState()[0]);
         telemetry.addData("lower state", extender.getState()[1]);
         telemetry.addData("POS", extender.getPosition());
+        telemetry.addData("pos", extender.getEncoder());
+        telemetry.addData("mode", extender.getMode());
         telemetry.update();
     }
 }

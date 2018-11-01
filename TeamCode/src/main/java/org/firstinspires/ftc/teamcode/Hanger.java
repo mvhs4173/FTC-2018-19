@@ -21,6 +21,8 @@ public class Hanger {
     private double currentPos;
     private DigitalChannel lowerLim;
     public State state;
+    Timer psi = new Timer();
+    private boolean hasBeenPressed;
 
     /**
      * @param hookServo servo to control the grasping
@@ -37,6 +39,7 @@ public class Hanger {
         this.stopExtender = stopExtender;
         this.lowerLim = lowerLim;
         currentPos = origin;
+        hasBeenPressed = false;
         state = State.HANGING;
     }
 
@@ -78,7 +81,9 @@ public class Hanger {
     }
 
     public void extendHook(){
-        extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
         extensionMotor.setPower(1);
     }
 
@@ -86,45 +91,56 @@ public class Hanger {
         extensionMotor.setPower(0);
     }
 
-    public boolean hang(){
-        Timer psi = new Timer();
-        extendHook();
-        release();
+    public void hang(){
+        if (!hasBeenPressed){
+            extendHook();
+            release();
+        }
         if (stopExtender.getState()){
+            hasBeenPressed = true;
             stopHook();
             grip();
             psi.init(1);
         }
         if (psi.isTimerUp()) {
             state = State.HANGING;
-            return retractHook();
-        } else return false;
+            retractHook();
+            psi.disable();
+        }
     }
 
-    public boolean drop() {
-        Timer pi = new Timer();
-        extendHook();
+    public void drop() {
+        if (!hasBeenPressed){
+            extendHook();
+        }
         if (stopExtender.getState()){
+            hasBeenPressed = true;
             stopHook();
             release();
-            pi.init(1);
+            psi.init(1);
         }
-        if (pi.isTimerUp()) {
-            state = State.ONFLOOR;
-            return retractHook();
-        } else return false;
+        if (psi.isTimerUp()) {
+            state = State.HANGING;
+            retractHook();
+            psi.disable();
+        }
     }
 
-    private boolean retractHook() {
-        extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    private void retractHook() {
+        if (extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+            extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
         int target = 0;
-        int error = extensionMotor.getCurrentPosition() - target;
+        int error = target - extensionMotor.getCurrentPosition();
         extensionMotor.setTargetPosition(target);
         extensionMotor.setPower(0.5*error);
         if ((error == 0) || (lowerLim.getState())){
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            return true;
-        } else return false;
+            stopHook();
+            if (hasBeenPressed){
+                hasBeenPressed = false;
+            }
+        }
     }
 
     public enum State {
@@ -139,5 +155,13 @@ public class Hanger {
 
     public double getPosition() {
         return clawServo.getPosition();
+    }
+
+    double getEncoder() {
+        return extensionMotor.getCurrentPosition();
+    }
+
+    DcMotor.RunMode getMode() {
+        return extensionMotor.getMode();
     }
 }

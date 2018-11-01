@@ -27,7 +27,7 @@ public class Hardware {
     public DcMotor extensionMotor = null;
     public BNO055IMU imu = null;
     public Servo hookServo = null;
-    Servo minionServo;
+    Servo markerServo;
     public DigitalChannel extenderStop = null;
     Compass compass = null;
 
@@ -59,7 +59,7 @@ public class Hardware {
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         //collectorMotor.setDirection(DcMotor.Direction.FORWARD);
         //armMotor.setDirection(DcMotor.Direction.FORWARD);
-        extensionMotor.setDirection(DcMotor.Direction.FORWARD);
+        extensionMotor.setDirection(DcMotor.Direction.REVERSE);
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -78,7 +78,7 @@ public class Hardware {
         extenderStop = hwMap.digitalChannel.get("Extender Switch");
         extenderLowerLim = hwMap.digitalChannel.get("E Lower Lim");
 
-        minionServo = hwMap.servo.get("Minion Servo");
+        markerServo = hwMap.servo.get("Minion Servo");
     }
 
     /***

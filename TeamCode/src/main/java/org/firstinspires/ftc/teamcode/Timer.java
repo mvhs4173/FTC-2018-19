@@ -27,10 +27,13 @@ public class Timer {
      */
     public boolean isTimerUp(){
         double currentTime = System.nanoTime() / 1.0E9;
-        return (!initialized) || (currentTime - startTime >= seconds); //TODO: give error when not initialized
+        if(!initialized){
+            return false;
+        } else{
+            return (currentTime - startTime >= seconds);
+        }
     }
 
-    @SuppressWarnings("unused")
     public void disable(){
         initialized = false;
     }

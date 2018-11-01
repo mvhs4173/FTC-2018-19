@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class MinionArm {
+public class MarkerArm {
     Servo minionServo;
     double currentPos;
     double origin = 0.5;
     ToggleButton increaseValue = new ToggleButton(), decreaseValue = new ToggleButton();
 
-    MinionArm(Servo minionServo) {
+    MarkerArm(Servo minionServo) {
         this.minionServo = minionServo;
     }
 
