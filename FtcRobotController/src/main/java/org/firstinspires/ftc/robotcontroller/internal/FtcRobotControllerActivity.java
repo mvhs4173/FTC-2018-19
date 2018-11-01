@@ -131,10 +131,7 @@ import org.opencv.core.Mat;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import ftc.vision.BeaconProcessor;
 import ftc.vision.FrameGrabber;
-import ftc.vision.ImageProcessor;
-import ftc.vision.ImageProcessorResult;
 
 @SuppressWarnings("WeakerAccess")
 public class FtcRobotControllerActivity extends Activity
@@ -196,6 +193,7 @@ public class FtcRobotControllerActivity extends Activity
 
           cameraViewBase = (JavaCamera2View) findViewById(R.id.show_camera_activity_java_surface_view);
           frameGrabber = new FrameGrabber(cameraViewBase, 176, 144);
+          Log.d(TAG, "Created");
       }
 
     public void frameButtonOnClick(View v){

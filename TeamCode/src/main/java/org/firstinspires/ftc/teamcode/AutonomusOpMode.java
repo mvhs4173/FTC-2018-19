@@ -20,8 +20,6 @@ public class AutonomusOpMode extends OpMode {
 
     @Override
     public void loop() {
-        if (vision == null) {
-            vision = new Vision();
-        }
+
     }
 }
