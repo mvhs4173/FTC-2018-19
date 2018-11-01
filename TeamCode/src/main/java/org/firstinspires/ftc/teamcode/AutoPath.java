@@ -49,12 +49,14 @@ public class AutoPath {
 
     void init(){
         task = Task.DROP;
+        hanger.task = Hanger.Task.DROP;
     }
 
     void execute(){
         switch (task){
             case DROP:
-                hanger.drop(); task = Task.DRIVE;
+                hanger.execute();
+                if (hanger.task == Hanger.Task.Float) task = Task.DRIVE;
                 break;
             case DRIVE:
                 if (driveTrain.driveDistance(5, 0)) task = Task.FINDGOLD;

@@ -20,7 +20,6 @@ public class Hanger {
     private double origin = 0.3;
     private double currentPos;
     private DigitalChannel lowerLim;
-    public State state;
     Timer psi = new Timer();
     private boolean hasBeenPressed;
 
@@ -40,7 +39,6 @@ public class Hanger {
         this.lowerLim = lowerLim;
         currentPos = origin;
         hasBeenPressed = false;
-        state = State.HANGING;
     }
 
     public void grip() {
@@ -91,62 +89,37 @@ public class Hanger {
         extensionMotor.setPower(0);
     }
 
-    public void hang(){
-        if (!hasBeenPressed){
-            extendHook();
-            release();
-        }
-        if (stopExtender.getState()){
-            hasBeenPressed = true;
-            stopHook();
-            grip();
-            psi.init(1);
-        }
-        if (psi.isTimerUp()) {
-            state = State.HANGING;
-            retractHook();
-            psi.disable();
-        }
-    }
-
-    public void drop() {
-        if (!hasBeenPressed){
-            extendHook();
-        }
-        if (stopExtender.getState()){
-            hasBeenPressed = true;
-            stopHook();
-            release();
-            psi.init(1);
-        }
-        if (psi.isTimerUp()) {
-            state = State.HANGING;
-            retractHook();
-            psi.disable();
-        }
-    }
-
-    private void retractHook() {
-        if (extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-            extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        int target = 0;
-        int error = target - extensionMotor.getCurrentPosition();
-        extensionMotor.setTargetPosition(target);
-        extensionMotor.setPower(0.5*error);
-        if ((error == 0) || (lowerLim.getState())){
-            extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            stopHook();
-            if (hasBeenPressed){
-                hasBeenPressed = false;
-            }
-        }
-    }
-
-    public enum State {
-        HANGING,
-        ONFLOOR,
+    private enum Order{
+        INIT,
+        RUN,
         DONE
+    }
+
+    Order order;
+    int target;
+    int error;
+    private void retractHook() {
+        switch (order) {
+            case INIT:
+                if (extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                    extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                target = 0;
+                extensionMotor.setTargetPosition(target);
+                order = Order.RUN;
+                break;
+            case RUN:
+                error = target - extensionMotor.getCurrentPosition();
+                extensionMotor.setPower(0.5 * error);
+                if ((error == 0) || (lowerLim.getState())) order = Order.DONE;
+                break;
+            case DONE:
+                extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                stopHook();
+                if (hasBeenPressed) {
+                    hasBeenPressed = false;
+                }
+        }
     }
 
     public boolean[] getState(){
@@ -163,5 +136,62 @@ public class Hanger {
 
     DcMotor.RunMode getMode() {
         return extensionMotor.getMode();
+    }
+
+    enum Task{
+        HANG,
+        DROP,
+        Float
+    }
+
+    Task task;
+    void init(Task task1){
+        task = task1;
+    }
+    void execute(){
+        switch(task){
+            case DROP:
+                if (!hasBeenPressed){
+                    extendHook();
+                }
+                if (stopExtender.getState() && !hasBeenPressed){
+                    hasBeenPressed = true;
+                    stopHook();
+                    release();
+                    psi.init(1);
+                    order = Order.INIT;
+                }
+                if (psi.isTimerUp()) {
+                    retractHook();
+                    if (order == Order.DONE) {
+                        psi.disable();
+                        task = Task.Float;
+                    }
+                }
+                break;
+            case HANG:
+                if (!hasBeenPressed){
+                    extendHook();
+                    release();
+                }
+                if (stopExtender.getState() && !hasBeenPressed){
+                    hasBeenPressed = true;
+                    stopHook();
+                    grip();
+                    psi.init(1);
+                    order = Order.INIT;
+                }
+                if (psi.isTimerUp()) {
+                    retractHook();
+                    if (order == Order.DONE) {
+                        psi.disable();
+                        task = Task.Float;
+                    }
+                }
+                break;
+            case Float:
+                break;
+            default:
+        }
     }
 }

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class MarkerArm {
     Servo minionServo;
     double currentPos;
-    double origin = 0.5;
+    double origin = 0;
     ToggleButton increaseValue = new ToggleButton(), decreaseValue = new ToggleButton();
 
     MarkerArm(Servo minionServo) {
@@ -20,7 +20,7 @@ public class MarkerArm {
     public boolean release() {
         Timer t = new Timer();
         t.init(0.5);
-        currentPos = 0;
+        currentPos = 1;
         minionServo.setPosition(currentPos);
         return t.isTimerUp();
     }
