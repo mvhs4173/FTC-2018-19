@@ -126,7 +126,7 @@ public class Hanger {
         }
     }
 
-    private void retractHook() {
+    public void retractHook() {
         if (extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
             extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
