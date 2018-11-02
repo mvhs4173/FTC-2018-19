@@ -27,10 +27,11 @@ public class DriveTrain {
      * @param y The vertical value of the joystick
      */
     void driveWithJoyStick(double x, double y){
+        //Forward on JoyStick is negative
         double
-            X=x, //Forward on JoyStick is negative
-            V=(100-Math.abs(X))*(y /100)+ y,
-            W=(100-Math.abs(y))*(X/100)+X,
+            Y = Math.signum(y)*Math.pow(Math.abs(y), 2),
+            V=(100-Math.abs(x))*(Y /100)+ Y,
+            W=(100-Math.abs(Y))*(x /100)+ x,
             L=(V-W)/2,
             R=(V+W)/2;
         left.setPower(L);
@@ -88,6 +89,10 @@ public class DriveTrain {
             right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         return error[0] == 0;
+    }
+
+    void rotateToAngle() {
+
     }
 
     /**
