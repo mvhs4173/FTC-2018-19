@@ -8,16 +8,16 @@ public class AutoPath {
     Hardware hardware;
     DriveTrain driveTrain;
     Hanger hanger;
-    MinionArm minionArm;
+    MarkerArm markerArm;
     Compass compass;
     boolean isTurningDone = false;
 
-    public AutoPath(Hardware hardware, DriveTrain driveTrain, Hanger hanger, Compass compass, MinionArm minionArm){
+    public AutoPath(Hardware hardware, DriveTrain driveTrain, Hanger hanger, Compass compass, MarkerArm markerArm){
         this.hardware = hardware;
         this.driveTrain = driveTrain;
         this.hanger = hanger;
         this.compass = compass;
-        this.minionArm = minionArm;
+        this.markerArm = markerArm;
     }
 
     enum Task {
@@ -49,12 +49,14 @@ public class AutoPath {
 
     void init(){
         task = Task.DROP;
+        hanger.task = Hanger.Task.DROP;
     }
 
     void execute(){
         switch (task){
             case DROP:
-                if (hanger.drop()) task = Task.DRIVE;
+                hanger.execute();
+                if (hanger.task == Hanger.Task.Float) task = Task.DRIVE;
                 break;
             case DRIVE:
                 if (driveTrain.driveDistance(5, 0)) task = Task.FINDGOLD;
@@ -89,7 +91,7 @@ public class AutoPath {
                                 break;
                             default:
                         }
-                        if (minionArm.release()) task = Task.PARK;
+                        if (markerArm.release()) task = Task.PARK;
                         break;
                     case SILVER:
                         switch (samplePosition){
@@ -115,7 +117,7 @@ public class AutoPath {
                                     break;
                             default:
                         }
-                        if (minionArm.release()) task = Task.PARK;
+                        if (markerArm.release()) task = Task.PARK;
                         break;
                     default:
                 }

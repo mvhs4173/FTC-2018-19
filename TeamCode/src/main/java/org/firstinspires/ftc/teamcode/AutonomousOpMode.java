@@ -14,15 +14,17 @@ public class AutonomousOpMode extends OpMode {
     AutoPath auto;
     AutoPath.Start start;
     AutoPath.Team team;
+    MarkerArm markerArm;
 
     //Vision vision;
 
     @Override
     public void init() {
         hardware.init(hardwareMap);
-        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor);
+        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.compass);
         hanger = new Hanger(hardware.hookServo, hardware.extensionMotor, hardware.extenderStop, hardware.extenderLowerLim);
-        auto = new AutoPath(hardware, driveTrain, hanger, hardware.compass);
+        markerArm = new MarkerArm(hardware.markerServo);
+        auto = new AutoPath(hardware, driveTrain, hanger, hardware.compass, markerArm);
         auto.init();
     }
 

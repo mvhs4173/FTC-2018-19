@@ -13,6 +13,9 @@ import static org.opencv.core.CvType.CV_32FC3;
  * FTC Team EV 7393
  */
 public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 {
+
+    ElementRecognizer processor;
+
     public FrameGrabber(CameraBridgeViewBase cameraBridgeViewBase, int frameWidth, int frameHeight) {
 
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -20,6 +23,8 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 
         cameraBridgeViewBase.setMinimumHeight(frameHeight);
         cameraBridgeViewBase.setMaxFrameSize(frameWidth, frameHeight);
         cameraBridgeViewBase.setCvCameraViewListener(this);
+
+        processor = new ElementRecognizer();
     }
 
     @Override
@@ -36,6 +41,7 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat image = inputFrame.rgba();
         Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2BGR);
-        return image;
+
+        return processor.yellowCubeFilter(image);
     }
 }

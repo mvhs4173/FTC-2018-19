@@ -68,7 +68,7 @@ public class Testing_TeleOp extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-        driveTrain = new DriveTrain(robot.leftMotor, robot.rightMotor);
+        driveTrain = new DriveTrain(robot.leftMotor, robot.rightMotor, robot.compass);
 
         hanger = new Hanger(robot.hookServo, robot.extensionMotor, robot.extenderStop, robot.extenderLowerLim);
         hanger.setOrigin(0.4);

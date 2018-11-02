@@ -91,10 +91,10 @@ public class DriveTrain {
     }
 
     /**
-     * With the given information this method will calculate the appropriate speeds that the motors on the left and right side of the robot will need to rotate at to maintain a straight line in the direction specified
+     * With the given information this method will calculate the appropriate speeds that the motors on the left and right side of the robot will need to rotate at to maintain order straight line in the direction specified
      * @param desiredSpeed A number that will be multiplied by the final result to increase the speeds of the motors
-     * @param desiredHeading The direction in Degrees that you want the robot to face when driving in a line
-     * @param currentHeading The current heading of the robot in degrees (Must be an angle between -180 and +180 where a positive angle is a clockwise turn
+     * @param desiredHeading The direction in Degrees that you want the robot to face when driving in order line
+     * @param currentHeading The current heading of the robot in degrees (Must be an angle between -180 and +180 where order positive angle is order clockwise turn
      * @return A double array with 2 indexes containing the new speeds that should be applied to the left and right motors of the robot, The first index is the new speed for the Left Drive Unit
      */
     public double[] calculateMotorSpeedsForStraightLine(double desiredSpeed, double desiredHeading, double currentHeading) {
