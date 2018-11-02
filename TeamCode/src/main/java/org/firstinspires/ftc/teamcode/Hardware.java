@@ -73,6 +73,8 @@ public class Hardware {
         //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        extensionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Define and Initialize Servos
         hookServo = hwMap.servo.get("Hanger Servo");
         extenderStop = hwMap.digitalChannel.get("Extender Switch");

@@ -17,11 +17,17 @@ public class Hanger1 {
     private ToggleButton decreaseValue,
                          increaseValue;
     private DigitalChannel stopExtender;
-    private double origin = 0.3;
+    private double origin = 0.1;
     private double currentPos;
     private DigitalChannel lowerLim;
     Timer psi = new Timer();
-    private boolean hasBeenPressed;
+    public boolean hasBeenPressed;
+    Order retractOrder;
+    int target;
+    int error;
+    Task task;
+    Order dropOrder;
+    Order hangOrder;
 
     /**
      * @param hookServo servo to control the grasping
@@ -89,29 +95,20 @@ public class Hanger1 {
         extensionMotor.setPower(0);
     }
 
-    private enum Order{
-        INIT,
-        RUN,
-        DONE
-    }
-
-    Order order;
-    int target;
-    int error;
-    private void retractHook() {
-        switch (order) {
+    public void retractHook() {
+        switch (retractOrder) {
             case INIT:
                 if (extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
                     extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
                 target = 0;
                 extensionMotor.setTargetPosition(target);
-                order = Order.RUN;
+                retractOrder = Order.RUN;
                 break;
             case RUN:
                 error = target - extensionMotor.getCurrentPosition();
                 extensionMotor.setPower(0.5 * error);
-                if ((error == 0) || (lowerLim.getState())) order = Order.DONE;
+                if ((error == 0) || (lowerLim.getState())) retractOrder = Order.DONE;
                 break;
             case DONE:
                 extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -144,37 +141,76 @@ public class Hanger1 {
         Float
     }
 
-    Task task;
-	Order dropOrder;
-	Order hangOrder;
+    private enum Order{
+        INIT,
+        RUN,
+        DONE
+    }
+
     void init(Task task1){
         task = task1;
+        dropOrder = Order.INIT;
+        hangOrder = Order.INIT;
     }
     void execute(){
         switch(task){
             case DROP:
 				switch(dropOrder) {
-					
+                    case INIT:
+                        extendHook();
+                        if (stopExtender.getState()) {
+                            stopHook();
+                            release();
+                            retractOrder = Order.INIT;
+                            dropOrder = Order.RUN;
+                        }
+                        break;
+                    case RUN:
+                        retractHook();
+                        if (retractOrder == Order.DONE) dropOrder = Order.DONE;
+                        break;
+                    case DONE:
+                        stopHook();
+                        task = Task.Float;
 				}
+				/*
                 if (!hasBeenPressed){
                     extendHook();
                 }
                 if (stopExtender.getState() && !hasBeenPressed){
                     hasBeenPressed = true;
-                    stopHook();
-                    release();
                     psi.init(1);
-                    order = Order.INIT;
+                    retractOrder = Order.INIT;
                 }
                 if (psi.isTimerUp()) {
                     retractHook();
-                    if (order == Order.DONE) {
+                    if (retractOrder == Order.DONE) {
                         psi.disable();
                         task = Task.Float;
                     }
                 }
+                */
                 break;
             case HANG:
+                switch(hangOrder) {
+                    case INIT:
+                        extendHook();
+                        if (stopExtender.getState()) {
+                            stopHook();
+                            grip();
+                            retractOrder = Order.INIT;
+                            hangOrder = Order.RUN;
+                        }
+                        break;
+                    case RUN:
+                        retractHook();
+                        if (retractOrder == Order.DONE) hangOrder = Order.DONE;
+                        break;
+                    case DONE:
+                        stopHook();
+                        task = Task.Float;
+                }
+                /*
                 if (!hasBeenPressed){
                     extendHook();
                     release();
@@ -184,15 +220,16 @@ public class Hanger1 {
                     stopHook();
                     grip();
                     psi.init(1);
-                    order = Order.INIT;
+                    retractOrder = Order.INIT;
                 }
                 if (psi.isTimerUp()) {
                     retractHook();
-                    if (order == Order.DONE) {
+                    if (retractOrder == Order.DONE) {
                         psi.disable();
                         task = Task.Float;
                     }
                 }
+                */
                 break;
             case Float:
                 break;

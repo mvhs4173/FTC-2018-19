@@ -37,12 +37,12 @@ void loop() {
 and put the following code into it
 
 	try{
-            //Loop code here
-           }catch(Exception e) {
-            telemetry.addData("Say", FormatStackTrace(e));
-            telemetry.update();
-            throw e;
-           }
+        //Loop code here
+    }catch(Exception e) {
+        telemetry.addData("Say", FormatStackTrace(e));
+        telemetry.update();
+        throw e;
+    }
 
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
