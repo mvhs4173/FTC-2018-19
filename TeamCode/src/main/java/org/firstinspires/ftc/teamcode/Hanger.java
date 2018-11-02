@@ -22,7 +22,7 @@ public class Hanger {
     private DigitalChannel lowerLim;
     public State state;
     Timer psi = new Timer();
-    private boolean hasBeenPressed;
+    public boolean hasBeenPressed;
 
     /**
      * @param hookServo servo to control the grasping
@@ -100,12 +100,13 @@ public class Hanger {
             hasBeenPressed = true;
             stopHook();
             grip();
-            psi.init(1);
+            if (!psi.isInitialized()){
+                psi.init(1);
+            }
         }
         if (psi.isTimerUp()) {
             state = State.HANGING;
-            retractHook();
-            psi.disable();
+            if (retractHook()) psi.disable();
         }
     }
 
@@ -117,16 +118,17 @@ public class Hanger {
             hasBeenPressed = true;
             stopHook();
             release();
-            psi.init(1);
+            if (!psi.isInitialized()){
+                psi.init(1);
+            }
         }
         if (psi.isTimerUp()) {
             state = State.HANGING;
-            retractHook();
-            psi.disable();
+            if (retractHook()) psi.disable();
         }
     }
 
-    public void retractHook() {
+    public boolean retractHook() {
         if (extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
             extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -141,6 +143,7 @@ public class Hanger {
                 hasBeenPressed = false;
             }
         }
+        return lowerLim.getState();
     }
 
     public enum State {

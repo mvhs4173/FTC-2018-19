@@ -22,6 +22,10 @@ public class Timer {
         initialized = true;
     }
 
+    public boolean isInitialized() {
+        return initialized;
+    }
+
     /**
      * @return true when timer is done
      */
