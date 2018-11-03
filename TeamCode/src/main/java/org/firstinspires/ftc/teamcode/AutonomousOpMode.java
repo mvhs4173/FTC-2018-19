@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 public class AutonomousOpMode extends OpMode {
     //Objects
     Hardware hardware = new Hardware();
-    ToggleButton buttonA = new ToggleButton();
-    ToggleButton buttonB = new ToggleButton();
+    ToggleButton buttonA = new ToggleButton(), buttonB = new ToggleButton(), omega = new ToggleButton();
     DriveTrain driveTrain;
     Hanger hanger;
     AutoPath auto;
@@ -59,11 +58,26 @@ public class AutonomousOpMode extends OpMode {
         telemetry.addData("Raw Compass", hardware.compass.getRawHeading());
         telemetry.addData("heading", hardware.compass.getHeading());
         telemetry.addData("OriginAngle", hardware.compass.getOriginalRawHeading());
+        telemetry.update();
     }
 
+    double desiredAngle = 0;
     @Override
     public void loop() {
-        auto.execute();
+        //auto.execute();
+        if (omega.wasJustClicked(gamepad1.a)){
+            desiredAngle += 20;
+        } else if (omega.wasJustClicked(gamepad1.b)) {
+            desiredAngle -= 20;
+        }
+        driveTrain.driveDistance(desiredAngle, 0);
+        //driveTrain.rotateToAngle(desiredAngle);
+        telemetry.addData("Team", team);
+        telemetry.addData("Start", start);
+        telemetry.addData("Raw Compass", hardware.compass.getRawHeading());
+        telemetry.addData("heading", hardware.compass.getHeading());
+        telemetry.addData("OriginAngle", hardware.compass.getOriginalRawHeading());
+        telemetry.update();
         /*
         if (vision == null) {
             vision = new Vision();

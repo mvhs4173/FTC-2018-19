@@ -30,8 +30,8 @@ public class DriveTrain {
         //Forward on JoyStick is negative
         double
             Y = Math.signum(y)*Math.pow(Math.abs(y), 2),
-            V=(100-Math.abs(x))*(Y /100)+ Y,
-            W=(100-Math.abs(Y))*(x /100)+ x,
+            V=(1-Math.abs(x))*(Y /1)+ Y,
+            W=(1-Math.abs(Y))*(x /1)+ x,
             L=(V-W)/2,
             R=(V+W)/2;
         left.setPower(L);
@@ -68,31 +68,35 @@ public class DriveTrain {
     }
 
     /**
-     *
+     * For driving in a straight line
      * @param distance how far to drive in inches
      * @param desiredHeading in degrees
      */
     public boolean driveDistance(double distance, double desiredHeading) {
-        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         double[] currentPosition = {getEncoderPos()[0], getEncoderPos()[1]};
-        double[] error = {distance-currentPosition[0],distance-currentPosition[1]};
-        double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, desiredHeading, compass.getHeading());
-        if (error[0] != 0 || error[1] != 0) {
-            left.setTargetPosition((int)(distance*clicksPerInch));
-            right.setTargetPosition((int)(distance*clicksPerInch));
-            left.setPower(newMotorSpeeds[0]*error[0]);
-            right.setPower(newMotorSpeeds[1]*error[1]);
+        double[] error = {(distance * clicksPerInch)-currentPosition[0],(distance * clicksPerInch)-currentPosition[1]};
+        //double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, desiredHeading, compass.getHeading());
+        if (maintainHeading(desiredHeading, compass)) {
+            left.setPower(/*newMotorSpeeds[0]*/0.5*error[0]);
+            right.setPower(/*newMotorSpeeds[1]*/0.5*error[1]);
         } else {
             stopMotors();
-            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         return error[0] == 0;
     }
 
-    void rotateToAngle() {
-
+    void rotateToAngle(double desiredAngle) {
+        double error = desiredAngle - compass.getHeading();
+        if (error > 0) {
+            left.setPower(error * 0.05);
+            right.setPower(error * -0.05);
+        } else if (error < 0) {
+            left.setPower(error * -0.05);
+            right.setPower(error * 0.05);
+        } else {
+            left.setPower(0);
+            right.setPower(0);
+        }
     }
 
     /**
@@ -102,7 +106,7 @@ public class DriveTrain {
      * @param currentHeading The current heading of the robot in degrees (Must be an angle between -180 and +180 where a positive angle is a clockwise turn
      * @return A double array with 2 indexes containing the new speeds that should be applied to the left and right motors of the robot, The first index is the new speed for the Left Drive Unit
      */
-    public double[] calculateMotorSpeedsForStraightLine(double desiredSpeed, double desiredHeading, double currentHeading) {
+    private double[] calculateMotorSpeedsForStraightLine(double desiredSpeed, double desiredHeading, double currentHeading) {
         double newRightSpeed;
         double newLeftSpeed;
         double angleError = Degrees.subtract(currentHeading, desiredHeading);
