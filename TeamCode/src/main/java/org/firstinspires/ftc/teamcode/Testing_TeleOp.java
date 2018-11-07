@@ -50,60 +50,62 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Pushbot: Teleop Tank", group="Pushbot")
-//@Disabled
-public class Testing_TeleOp extends OpMode{
+@TeleOp(name="PushBot: TeleOp Tank", group="PushBot")
 
+//@Disabled
+public class Testing_TeleOp extends OpMode {
     /* Declare OpMode members. */
-    private Hardware robot = new Hardware(); // use the class created to define up Pushbot's hardwar
+    private Hardware robot = new Hardware(); // use the class created to define up PushBot's hardware
     private DriveTrain driveTrain = null;
     private Hanger hanger = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
+
     @Override
     public void init() {
+
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
+
         robot.init(hardwareMap);
         driveTrain = new DriveTrain(robot.leftMotor, robot.rightMotor, robot.compass);
-
         hanger = new Hanger(robot.hookServo, robot.extensionMotor, robot.extenderStop, robot.extenderLowerLim);
         hanger.setOrigin(0.4);
         hanger.returnToOrigin();
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Bonjour Monsieur");//
-        telemetry.addData("Say", "Tank Drive");//
-        telemetry.addData("Say", "Version 0.0.2");//
+        telemetry.addData("Say", "Bonjour Monsieur");
+        telemetry.addData("Say", "Tank Drive");
+        telemetry.addData("Say", "Version 0.0.2");
         updateTelemetry(telemetry);
     }
 
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
+
     @Override
     public void init_loop() {
-
     }
 
     /*
      * Code to run ONCE when the driver hits PLAY
      */
+
     @Override
     public void start() {
-
     }
 
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+
     @Override
     public void loop() {
         driveTrain.driveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
-
         if(gamepad1.x) hanger.grip(); //smaller number is more open
         if(gamepad1.b) hanger.release();
         hanger.moveServo(gamepad1.a, gamepad1.y);
@@ -118,9 +120,8 @@ public class Testing_TeleOp extends OpMode{
     /*
      * Code to run ONCE after the driver hits STOP
      */
+
     @Override
     public void stop() {
-
     }
-
 }

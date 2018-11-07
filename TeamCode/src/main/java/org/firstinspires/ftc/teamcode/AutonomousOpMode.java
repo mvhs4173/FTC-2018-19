@@ -17,7 +17,6 @@ public class AutonomousOpMode extends OpMode {
     MarkerArm markerArm;
 
     //Vision vision;
-
     @Override
     public void init() {
         hardware.init(hardwareMap);
@@ -29,7 +28,7 @@ public class AutonomousOpMode extends OpMode {
     }
 
     @Override
-    public void init_loop(){
+    public void init_loop() {
         if (start == AutoPath.Start.GOLD) {
             if (buttonA.wasJustClicked(gamepad1.a)) {
                 start = AutoPath.Start.SILVER;
@@ -69,6 +68,5 @@ public class AutonomousOpMode extends OpMode {
             vision = new Vision();
         }
         */
-
     }
 }
