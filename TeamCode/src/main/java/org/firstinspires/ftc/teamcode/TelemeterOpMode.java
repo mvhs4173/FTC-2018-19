@@ -31,6 +31,7 @@ public class TelemeterOpMode extends OpMode {
             extender = new Hanger(hardware.hookServo, hardware.extensionMotor, hardware.extenderStop, hardware.extenderLowerLim);
             markerArm = new MarkerArm(hardware.markerServo);
             markerArm.setPosition(0);
+            markerArm.returnToStow();
             extender.task = Hanger.Task.Float;
         }catch(Exception e) {
             telemetry.addData("Say", FormatStackTrace(e));
@@ -53,7 +54,7 @@ public class TelemeterOpMode extends OpMode {
         } else if (down.wasJustClicked(gamepad1.dpad_down)) {
             extender.init(Hanger.Task.DROP);
         }
-        extender.execute();
+        extender.execute(gamepad1.a);
         if (gamepad1.dpad_right) extender.release();
         if (gamepad1.dpad_left) extender.grip();
         telemetry.addData("stop state", extender.getState()[0]);

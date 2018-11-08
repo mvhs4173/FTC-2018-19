@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import java.lang.reflect.Field;
+
 public class AutoPath {
     Task task;
     Start start;
@@ -10,6 +12,8 @@ public class AutoPath {
     Hanger hanger;
     MarkerArm markerArm;
     Compass compass;
+    Timer sigma = new Timer();
+    Timer omikron = new Timer();
     boolean isTurningDone = false;
 
     public AutoPath(Hardware hardware, DriveTrain driveTrain, Hanger hanger, Compass compass, MarkerArm markerArm){
@@ -48,19 +52,35 @@ public class AutoPath {
     }
 
     void init(){
+        setStart(Start.GOLD);
+        setTeamColor(Team.BLUE);
         task = Task.DROP;
+        hanger.dropOrder = Hanger.Order.INIT;
     }
 
     void execute(){
         switch (task){
             case DROP:
                 hanger.task = Hanger.Task.DROP;
-                if (hanger.dropOrder == Hanger.Order.DONE)task = Task.DRIVE;
+                hanger.execute(false);
+                if (hanger.dropOrder == Hanger.Order.DONE){
+                    sigma.init(2.5/3.0);
+                    task = Task.DRIVE;
+                }
                 break;
             case DRIVE:
+                if (!sigma.isTimerUp()) {
+                    driveTrain.left.setPower(-1);
+                    driveTrain.right.setPower(-1);
+                } else if (sigma.isTimerUp()){
+                    driveTrain.stopMotors();
+                    task = Task.FINDGOLD;
+                }
                 break;
             case FINDGOLD:
                 samplePosition = SamplePosition.MID;
+                task = Task.CLAIM;
+                sigma.disable();
                 switch (samplePosition){
                     case MID:
                         break;
@@ -72,7 +92,10 @@ public class AutoPath {
                 }
                 break;
             case CLAIM:
-                if (markerArm.release()) task = Task.PARK;
+                if (markerArm.release()) {
+                    task = Task.PARK;
+                    omikron.init(1.25/3.0);
+                }
                 switch (start) {
                     case GOLD:
                         switch (samplePosition){
@@ -102,6 +125,13 @@ public class AutoPath {
                 }
                 break;
             case PARK:
+                if (!omikron.isTimerUp()) {
+                    driveTrain.left.setPower(1);
+                    driveTrain.right.setPower(1);
+                } else if (omikron.isTimerUp()){
+                    driveTrain.stopMotors();
+                    task = Task.DONE;
+                }
                 switch (start) {
                     case GOLD:
                         break;

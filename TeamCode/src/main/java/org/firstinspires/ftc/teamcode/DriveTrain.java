@@ -29,7 +29,7 @@ public class DriveTrain {
     void driveWithJoyStick(double x, double y){
         //Forward on JoyStick is negative
         double
-            Y = Math.signum(y)*Math.pow(Math.abs(y), 2),
+            Y = Math.signum(y)*Math.pow(Math.abs(y), 2.5),
             V=(1-Math.abs(x))*(Y /1)+ Y,
             W=(1-Math.abs(Y))*(x /1)+ x,
             L=(V-W)/2,
@@ -42,11 +42,11 @@ public class DriveTrain {
         return new int[]{left.getCurrentPosition(),right.getCurrentPosition()};
     }
 
-    public boolean maintainHeading(double desiredHeading, Compass compass) {
-        double currentHeading = compass.getHeading();
+    public boolean maintainHeading(double desiredHeading) {
+        double currentHeading = this.compass.getHeading();
         double allowableError = 1;//degrees
 
-        double pFactor = 0.07;
+        double pFactor = 0.001;
         double error = Degrees.subtract(desiredHeading, currentHeading);
 
         //If the robot is too far off the desired angle then continue with P loop
@@ -76,7 +76,7 @@ public class DriveTrain {
         double[] currentPosition = {getEncoderPos()[0], getEncoderPos()[1]};
         double[] error = {(distance * clicksPerInch)-currentPosition[0],(distance * clicksPerInch)-currentPosition[1]};
         //double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, desiredHeading, compass.getHeading());
-        if (maintainHeading(desiredHeading, compass)) {
+        if (maintainHeading(desiredHeading)) {
             left.setPower(/*newMotorSpeeds[0]*/0.5*error[0]);
             right.setPower(/*newMotorSpeeds[1]*/0.5*error[1]);
         } else {

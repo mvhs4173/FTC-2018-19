@@ -21,7 +21,7 @@ public class Hanger {
     private double currentPos;
     private DigitalChannel lowerLim;
     Timer psi = new Timer();
-    private Order retractOrder;
+    public Order retractOrder;
     private int target;
     Task task;
     public Order dropOrder;
@@ -137,6 +137,7 @@ public class Hanger {
 
     public enum Order{
         INIT,
+        WAIT,
         RUN,
         DONE
     }
@@ -146,13 +147,14 @@ public class Hanger {
         dropOrder = Order.INIT;
         hangOrder = Order.INIT;
     }
-    void execute(){
+
+    void execute(boolean button){
         switch(task){
             case DROP:
 				switch(dropOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 5000)) { // 5000 is max on encoder as a backup
+                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4650)) { // 5000 is max on encoder as a backup
                             stopHook();
                             release();
                             retractOrder = Order.INIT;
@@ -172,12 +174,15 @@ public class Hanger {
                 switch(hangOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 5000)) { // 5000 is max on encoder as a backup
+                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4650)) { // 5000 is max on encoder as a backup
                             stopHook();
                             grip();
                             retractOrder = Order.INIT;
-                            hangOrder = Order.RUN;
+                            hangOrder = Order.WAIT;
                         }
+                        break;
+                    case WAIT:
+                        if (button) hangOrder = Order.RUN;
                         break;
                     case RUN:
                         retractHook();
