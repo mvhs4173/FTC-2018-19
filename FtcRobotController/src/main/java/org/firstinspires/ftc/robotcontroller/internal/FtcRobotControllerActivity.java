@@ -184,7 +184,7 @@ public class FtcRobotControllerActivity extends Activity
 
     public static FrameGrabber frameGrabber = null;
     public static SeekBar hueSeekBar = null;
-    public static TextView infoDisplay = null;
+    public static TextView resultText = null;
 
   ///////Vision Processing////////
       public static CameraBridgeViewBase cameraViewBase = null;
@@ -197,8 +197,7 @@ public class FtcRobotControllerActivity extends Activity
           cameraViewBase = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
           frameGrabber = new FrameGrabber(cameraViewBase, 176, 144);
           hueSeekBar = findViewById(R.id.seekBar);
-          infoDisplay = findViewById(R.id.resultText);
-
+          resultText = findViewById(R.id.resultText);
           Log.d(TAG, "Created");
       }
 

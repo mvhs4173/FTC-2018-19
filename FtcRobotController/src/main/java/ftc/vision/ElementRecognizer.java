@@ -76,12 +76,11 @@ public class ElementRecognizer {
 
                 contourIndex++;
             }
-            contourIndex--;
 
-            Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 5);
+            Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 3);
 
             if (contour != null) {
-                Moments moments = Imgproc.moments(contour, false);
+                Moments moments = Imgproc.moments(contour, true);
 
                 Scalar circleColor = new Scalar(255, 0, 0);
 
