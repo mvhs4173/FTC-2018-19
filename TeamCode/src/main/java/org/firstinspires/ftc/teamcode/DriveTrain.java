@@ -46,15 +46,20 @@ public class DriveTrain {
         double currentHeading = this.compass.getHeading();
         double allowableError = 1;//degrees
 
-        double pFactor = 0.001;
+        double pFactor = 0.00009;
         double error = Degrees.subtract(desiredHeading, currentHeading);
 
         //If the robot is too far off the desired angle then continue with P loop
         if (Math.abs(error) > allowableError) {
             double newSpeed = error * pFactor;
 
-            left.setPower(newSpeed);
-            right.setPower(-newSpeed);
+            if (newSpeed > .5){
+                newSpeed = 0.5;
+            } else if (newSpeed < -0.5) {
+                newSpeed = -0.5;
+            }
+            left.setPower(-newSpeed);
+            right.setPower(newSpeed);
 
             return false;
         }else {
