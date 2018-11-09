@@ -1,5 +1,7 @@
 package ftc.vision;
 
+import android.util.Log;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -20,54 +22,74 @@ public class ElementRecognizer {
     }
 
 
+
     public Mat yellowCubeFilter(Mat image) {
-        Mat hsv = new Mat();
-        Mat mask = new Mat();
-        Mat filteredImage = new Mat();
-        Mat grayImage = new Mat();
         Mat cannyImage = new Mat();
-        Mat blurredImage = new Mat();
+        try {
 
-        List<MatOfPoint> contours = new ArrayList<>();
-        Mat archy = new Mat();
+            Mat hsv = new Mat();
+            Mat mask = new Mat();
+            Mat filteredImage = new Mat();
+            Mat grayImage = new Mat();
+            Mat blurredImage = new Mat();
 
-        Mat outImage = new Mat();
+            List<MatOfPoint> contours = new ArrayList<>();
+            Mat archy = new Mat();
 
-        Imgproc.cvtColor(image, hsv, Imgproc.COLOR_BGR2HSV);//Convert the image to the HSV color space
+            Mat outImage = new Mat();
 
-        Scalar maxRange = new Scalar(100, 255, 255);
-        Scalar lowestRange = new Scalar(90, 125, 125);
+            Imgproc.cvtColor(image, hsv, Imgproc.COLOR_BGR2HSV);//Convert the image to the HSV color space
 
-        Core.inRange(hsv, lowestRange, maxRange, mask);
+            Scalar maxRange = new Scalar(100, 255, 255);
+            Scalar lowestRange = new Scalar(80, 100, 100);
 
-        Core.bitwise_and(image, image, filteredImage, mask);
+            Core.inRange(hsv, lowestRange, maxRange, mask);
 
-        Imgproc.Canny(filteredImage, cannyImage, 10, 100);
+            Core.bitwise_and(image, image, filteredImage, mask);
 
-        Imgproc.findContours(cannyImage, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            Imgproc.cvtColor(filteredImage, grayImage, Imgproc.COLOR_BGR2GRAY);
 
-        //Check all the contours and get the contour with largest area
-        Iterator<MatOfPoint> contourIterator = contours.iterator();
-        double largestArea = 0.0;
-        Mat contour = null;
+            Imgproc.GaussianBlur(grayImage, blurredImage, new Size(5, 5), 0);
 
-        while (contourIterator.hasNext()) {
-            Mat currentContour = contourIterator.next();
+            Imgproc.Canny(blurredImage, cannyImage, 10, 100);
 
-            double area = Imgproc.contourArea(currentContour);
 
-            if (area > largestArea) {
-                largestArea = area;
-                contour = currentContour;
+            Imgproc.findContours(cannyImage, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+            //Check all the contours and get the contour with largest area
+            Iterator<MatOfPoint> contourIterator = contours.iterator();
+            double largestArea = 0.0;
+            Mat contour = null;
+            int largestIndex = 0;
+            int contourIndex = 0;
+
+            while (contourIterator.hasNext()) {
+                Mat currentContour = contourIterator.next();
+
+                double area = Imgproc.contourArea(currentContour);
+
+                if (area > largestArea) {
+                    largestArea = area;
+                    contour = currentContour;
+                    largestIndex = contourIndex;
+                }
+
+                contourIndex++;
             }
+            contourIndex--;
+
+            Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 5);
+
+            if (contour != null) {
+                Moments moments = Imgproc.moments(contour, false);
+
+                Scalar circleColor = new Scalar(255, 0, 0);
+
+                Point center = new Point((int) (moments.m10 / moments.m00), (int) (moments.m01 / moments.m00));
+            }
+        }catch (Throwable e) {
+                Log.d("OpenCv Code Error", e.toString());
         }
-        Moments moments = Imgproc.moments(contours.get(0), false);
-        Scalar circleColor = new Scalar(255, 0, 0);
-
-        Point center = new Point((int)(moments.m10 / moments.m00), (int)(moments.m01 / moments.m00));
-
-        Imgproc.circle(image, center, 3, circleColor);
-
         return image;
     }
 }

@@ -61,6 +61,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.blocks.ftcrobotcontroller.BlocksActivity;
@@ -123,8 +124,7 @@ import org.firstinspires.ftc.robotcore.internal.webserver.WebServer;
 import org.firstinspires.inspection.RcInspectionActivity;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.JavaCamera2View;
-import org.opencv.android.JavaCameraView;
+import org.opencv.android.JavaCameraView;//JavaCamera2View is newer but it gives very low FPS (around 5) This library gives 30 FPS
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
@@ -183,6 +183,8 @@ public class FtcRobotControllerActivity extends Activity
     static final int FRAME_HEIGHT_REQUEST = 144;
 
     public static FrameGrabber frameGrabber = null;
+    public static SeekBar hueSeekBar = null;
+    public static TextView infoDisplay = null;
 
   ///////Vision Processing////////
       public static CameraBridgeViewBase cameraViewBase = null;
@@ -192,8 +194,11 @@ public class FtcRobotControllerActivity extends Activity
       void myOnCreate(){
           getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-          cameraViewBase = (JavaCamera2View) findViewById(R.id.show_camera_activity_java_surface_view);
+          cameraViewBase = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
           frameGrabber = new FrameGrabber(cameraViewBase, 176, 144);
+          hueSeekBar = findViewById(R.id.seekBar);
+          infoDisplay = findViewById(R.id.resultText);
+
           Log.d(TAG, "Created");
       }
 

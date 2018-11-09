@@ -1,7 +1,9 @@
 package ftc.vision;
 
+import android.util.Log;
 import android.view.SurfaceView;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -12,7 +14,7 @@ import static org.opencv.core.CvType.CV_32FC3;
  * Created by vandejd1 on 8/30/16.
  * FTC Team EV 7393
  */
-public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
 
     ElementRecognizer processor;
 
@@ -38,10 +40,15 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener2 
     }
 
     @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        Mat image = inputFrame.rgba();
-        Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2BGR);
-
+    public Mat onCameraFrame(Mat inputFrame) {
+        Mat image = inputFrame;
+        //Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2BGR);
+        try {
+            int barProgress = FtcRobotControllerActivity.hueSeekBar.getProgress();
+            FtcRobotControllerActivity.infoDisplay.setText(barProgress);
+        }catch (Throwable e) {
+            Log.d("OpenCv Code Error", e.toString());
+        }
         return processor.yellowCubeFilter(image);
     }
 }
