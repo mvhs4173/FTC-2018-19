@@ -2,10 +2,14 @@ package ftc.vision;
 
 import android.util.Log;
 
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -25,11 +29,12 @@ public class ElementRecognizer {
 
     public Mat yellowCubeFilter(Mat image) {
         Mat cannyImage = new Mat();
+        Mat filteredImage = new Mat();
         try {
 
             Mat hsv = new Mat();
             Mat mask = new Mat();
-            Mat filteredImage = new Mat();
+
             Mat grayImage = new Mat();
             Mat blurredImage = new Mat();
 
@@ -40,8 +45,11 @@ public class ElementRecognizer {
 
             Imgproc.cvtColor(image, hsv, Imgproc.COLOR_BGR2HSV);//Convert the image to the HSV color space
 
-            Scalar maxRange = new Scalar(100, 255, 255);
-            Scalar lowestRange = new Scalar(80, 100, 100);
+            int thresh1 = FtcRobotControllerActivity.hueSeekBar.getProgress();
+
+
+            Scalar maxRange = new Scalar(115, 255, 255);
+            Scalar lowestRange = new Scalar(95, 170, 50);
 
             Core.inRange(hsv, lowestRange, maxRange, mask);
 
@@ -51,41 +59,56 @@ public class ElementRecognizer {
 
             Imgproc.GaussianBlur(grayImage, blurredImage, new Size(5, 5), 0);
 
-            Imgproc.Canny(blurredImage, cannyImage, 10, 100);
+            Imgproc.Canny(blurredImage, cannyImage, 50, 100);
 
 
             Imgproc.findContours(cannyImage, contours, new Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
             //Check all the contours and get the contour with largest area
             Iterator<MatOfPoint> contourIterator = contours.iterator();
             double largestArea = 0.0;
-            Mat contour = null;
+            List<MatOfPoint> boxPoints = new ArrayList<>();
+            int index = 0;
             int largestIndex = 0;
-            int contourIndex = 0;
 
             while (contourIterator.hasNext()) {
-                Mat currentContour = contourIterator.next();
+                MatOfPoint currentContour = (MatOfPoint)contourIterator.next();
 
                 double area = Imgproc.contourArea(currentContour);
 
-                if (area > largestArea) {
-                    largestArea = area;
-                    contour = currentContour;
-                    largestIndex = contourIndex;
+                //Aproximate the contours
+                double epsilon = 0.07*Imgproc.arcLength(new MatOfPoint2f(currentContour.toArray()), true);
+                MatOfPoint2f approx = new MatOfPoint2f();
+                Imgproc.approxPolyDP(new MatOfPoint2f(currentContour.toArray()), approx, epsilon, true);
+
+                int numVerts = approx.toArray().length;
+                //FtcRobotControllerActivity.resultText.setText(String.valueOf(numVerts));
+                //Make sure its in a basic square/cube shape
+                if (numVerts >= 4 && numVerts < 8 && area > 80) {
+                    //Get a bounding box
+                    RotatedRect boundingBox = Imgproc.minAreaRect(approx);
+
+                    Point[] vertices = new Point[4];
+                    boundingBox.points(vertices);//Get vertices
+                    MatOfPoint verts = new MatOfPoint(vertices);
+                    Rect bBox = Imgproc.boundingRect(verts);
+                    int ratio = bBox.width/bBox.height;
+
+
+                    if (area > largestArea && ratio >= 0.98 && ratio <= 1.02) {
+                        largestIndex = index;
+                        largestArea = area;
+                        boxPoints.add(new MatOfPoint(vertices));
+                        index++;
+                    }
                 }
-
-                contourIndex++;
             }
 
-            Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 3);
+            Rect boundingBox = Imgproc.boundingRect(boxPoints.get(largestIndex));
+            Imgproc.rectangle(image, new Point(boundingBox.x, boundingBox.y), new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height), new Scalar(0, 255, 0));
+            //Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 3);
+            //Rect boundingBox = Imgproc.boundingRect((MatOfPoint)contour);
+            //Imgproc.rectangle(image, new Point(boundingBox.x, boundingBox.y), new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height), new Scalar(0, 255, 0));
 
-            if (contour != null) {
-                Moments moments = Imgproc.moments(contour, true);
-
-                Scalar circleColor = new Scalar(255, 0, 0);
-
-                Point center = new Point((int) (moments.m10 / moments.m00), (int) (moments.m01 / moments.m00));
-            }
         }catch (Throwable e) {
                 Log.d("OpenCv Code Error", e.toString());
         }

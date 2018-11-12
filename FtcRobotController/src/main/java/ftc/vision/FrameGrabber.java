@@ -43,13 +43,14 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
     public Mat onCameraFrame(Mat inputFrame) {
         Mat image = inputFrame;
         //Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2BGR);
-        int hue = FtcRobotControllerActivity.hueSeekBar.getProgress();
         try {
-            FtcRobotControllerActivity.resultText.setText(String.valueOf(hue));
+            if (FtcRobotControllerActivity.hueSeekBar != null && FtcRobotControllerActivity.resultText != null) {
+                int sliderValue = FtcRobotControllerActivity.hueSeekBar.getProgress();
+                FtcRobotControllerActivity.resultText.setText(String.valueOf(sliderValue));
+            }
         }catch (Throwable e) {
-            Log.d("GUI CODE ERROR", e.toString());
+            Log.d("VISION ERROR", e.toString());
         }
-
 
         return processor.yellowCubeFilter(image);
     }
