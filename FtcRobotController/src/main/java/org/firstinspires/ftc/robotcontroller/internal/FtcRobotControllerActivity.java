@@ -359,7 +359,7 @@ public class FtcRobotControllerActivity extends Activity
     setContentView(R.layout.activity_ftc_controller);
 
     //////VISION PROCESSING/////////
-    myOnCreate();
+    //myOnCreate();
     /////////VISION END/////////////
 
     preferencesHelper = new PreferencesHelper(TAG, context);
@@ -478,7 +478,7 @@ public class FtcRobotControllerActivity extends Activity
     super.onResume();
 
     /////////VISION/////////
-      myOnResume();
+      //myOnResume();
       ///////END VISION///////
     RobotLog.vv(TAG, "onResume()");
   }
@@ -488,7 +488,7 @@ public class FtcRobotControllerActivity extends Activity
     super.onPause();
 
     //////VISION//////
-      myOnPause();
+      //myOnPause();
       //////END VISION/////
 
     RobotLog.vv(TAG, "onPause()");

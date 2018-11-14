@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@SuppressWarnings("unused")
+@TeleOp(name = "GamePadCheck")
 public class GamepadCheck extends OpMode {
 
     @Override
