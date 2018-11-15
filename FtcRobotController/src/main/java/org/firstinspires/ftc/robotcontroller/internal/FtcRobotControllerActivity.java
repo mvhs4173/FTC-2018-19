@@ -183,7 +183,9 @@ public class FtcRobotControllerActivity extends Activity
     static final int FRAME_HEIGHT_REQUEST = 144;
 
     public static FrameGrabber frameGrabber = null;
-    public static SeekBar hueSeekBar = null;
+    public static SeekBar seekBar1 = null;
+    public static SeekBar seekBar2 = null;
+    public static SeekBar seekBar3 = null;
     public static TextView resultText = null;
 
   ///////Vision Processing////////
@@ -196,7 +198,9 @@ public class FtcRobotControllerActivity extends Activity
 
           cameraViewBase = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
           frameGrabber = new FrameGrabber(cameraViewBase, 176, 144);
-          hueSeekBar = findViewById(R.id.seekBar);
+          seekBar1 = findViewById(R.id.seekBar1);
+          seekBar2 = findViewById(R.id.seekBar2);
+          seekBar3 = findViewById(R.id.seekBar3);
           resultText = findViewById(R.id.resultText);
           Log.d(TAG, "Created");
       }

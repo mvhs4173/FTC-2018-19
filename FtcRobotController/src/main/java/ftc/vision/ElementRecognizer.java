@@ -43,13 +43,14 @@ public class ElementRecognizer {
 
             Mat outImage = new Mat();
 
-            Imgproc.cvtColor(image, hsv, Imgproc.COLOR_BGR2HSV);//Convert the image to the HSV color space
+            Imgproc.cvtColor(image, hsv, Imgproc.COLOR_BGR2Lab);//Convert the image to the HSV color space
 
-            int thresh1 = FtcRobotControllerActivity.hueSeekBar.getProgress();
+            double L = Math.floor(FtcRobotControllerActivity.seekBar1.getProgress()*2.55);
+            double A = Math.floor(FtcRobotControllerActivity.seekBar2.getProgress()*2.55);
+            double B = Math.floor(FtcRobotControllerActivity.seekBar3.getProgress()*2.55);
 
-
-            Scalar maxRange = new Scalar(115, 255, 255);
-            Scalar lowestRange = new Scalar(95, 170, 50);
+            Scalar maxRange = new Scalar(L, A, B);
+            Scalar lowestRange = new Scalar(30, 30, 30);
 
             Core.inRange(hsv, lowestRange, maxRange, mask);
 
@@ -76,14 +77,15 @@ public class ElementRecognizer {
                 double area = Imgproc.contourArea(currentContour);
 
                 //Aproximate the contours
-                double epsilon = 0.07*Imgproc.arcLength(new MatOfPoint2f(currentContour.toArray()), true);
+                double epsilon = 0.05*Imgproc.arcLength(new MatOfPoint2f(currentContour.toArray()), true);
                 MatOfPoint2f approx = new MatOfPoint2f();
                 Imgproc.approxPolyDP(new MatOfPoint2f(currentContour.toArray()), approx, epsilon, true);
+
 
                 int numVerts = approx.toArray().length;
                 //FtcRobotControllerActivity.resultText.setText(String.valueOf(numVerts));
                 //Make sure its in a basic square/cube shape
-                if (numVerts >= 4 && numVerts < 8 && area > 80) {
+                if (numVerts >= 4 && area >= 20) {
                     //Get a bounding box
                     RotatedRect boundingBox = Imgproc.minAreaRect(approx);
 
@@ -94,7 +96,7 @@ public class ElementRecognizer {
                     int ratio = bBox.width/bBox.height;
 
 
-                    if (area > largestArea && ratio >= 0.98 && ratio <= 1.02) {
+                    if (area > largestArea) {
                         largestIndex = index;
                         largestArea = area;
                         boxPoints.add(new MatOfPoint(vertices));
