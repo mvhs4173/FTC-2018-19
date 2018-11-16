@@ -9,7 +9,7 @@ public class DriveTrain {
     double lineAllowableAngleError = 0.1;
     double lineMaxMultiplyNumber = 3;
     private double wheelDiameter = 4;
-    private double clicksPerRev = 140;
+    private double clicksPerRev = 280;
     private double clicksPerInch = clicksPerRev/(Math.PI*wheelDiameter); // clicks/rev * (inch/rev)^-1
 
     /**
@@ -82,8 +82,8 @@ public class DriveTrain {
         double[] error = {(distance * clicksPerInch)-currentPosition[0],(distance * clicksPerInch)-currentPosition[1]};
         //double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, desiredHeading, compass.getHeading());
         if (maintainHeading(desiredHeading)) {
-            left.setPower(/*newMotorSpeeds[0]*/0.5*error[0]);
-            right.setPower(/*newMotorSpeeds[1]*/0.5*error[1]);
+            left.setPower(/*newMotorSpeeds[0]*/-0.5*error[0]);
+            right.setPower(/*newMotorSpeeds[1]*/-0.5*error[1]);
         } else {
             stopMotors();
         }
@@ -93,11 +93,11 @@ public class DriveTrain {
     void rotateToAngle(double desiredAngle) {
         double error = desiredAngle - compass.getHeading();
         if (error > 0) {
+            left.setPower(error * -0.05);
+            right.setPower(error *  0.05);
+        } else if (error < 0) {
             left.setPower(error * 0.05);
             right.setPower(error * -0.05);
-        } else if (error < 0) {
-            left.setPower(error * -0.05);
-            right.setPower(error * 0.05);
         } else {
             left.setPower(0);
             right.setPower(0);

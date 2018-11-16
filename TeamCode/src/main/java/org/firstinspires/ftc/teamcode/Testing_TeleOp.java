@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.sun.source.tree.IfTree;
 
 @TeleOp(name = "Testing_TeleOp", group = "Auto")
 public class Testing_TeleOp extends OpMode {
@@ -47,6 +48,12 @@ public class Testing_TeleOp extends OpMode {
     @Override
     public void loop() {
         try {
+            if (gamepad1.y){
+                extender.extendHook();
+            } else if (gamepad1.a) {
+                extender.retractHook();
+            }
+
             telemetry.addData("stop state", extender.getState()[0]);
             telemetry.addData("lower state", extender.getState()[1]);
             telemetry.addData("POS", extender.getPosition());

@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.text.BreakIterator;
+
 /**
  * This is NOT an OpMode.
  * This class can be used to define all the specific hardware for up single robot.
@@ -74,6 +76,9 @@ public class Hardware {
         extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         extensionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         // Define and Initialize Servos
         hookServo = hwMap.servo.get("Hanger Servo");
