@@ -6,6 +6,7 @@ import com.vuforia.Trackable;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -30,9 +31,14 @@ public class VuforiaTest extends OpMode {
     private VuforiaLocalizer vuforia = null;
     private VuforiaTrackables pictures = null;
 
+    private OpenGLMatrix lastLocation = null;
+    private boolean TargetVisible = false;
+
     private static final float mmPerInch        = 25.4f;
     private static final float mmFTCFieldWidth  = (12*6) * mmPerInch;       // the width of the FTC field (from the center point to the outer panels)
     private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+
+    List<VuforiaTrackable> allTrackables;
 
     @Override
     public void init() {
@@ -53,7 +59,7 @@ public class VuforiaTest extends OpMode {
         VuforiaTrackable backSpace = pictures.get(3);
         backSpace.setName("Back-Space");
 
-        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(pictures);
 
         OpenGLMatrix blueRoverLocationOnField = OpenGLMatrix
@@ -98,6 +104,29 @@ public class VuforiaTest extends OpMode {
     double desiredAngle = 0;
     @Override
     public void loop() {
+        TargetVisible = false;
+        for (VuforiaTrackable trackable : allTrackables) {
+             if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                 telemetry.addData("VisableTarget", trackable.getName());
+                 TargetVisible = true;
 
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+             }
+        }
+        if (TargetVisible) {
+            VectorF translation =  lastLocation.getTranslation();
+            telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
+            translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2), mmPerInch);
+
+            Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
+            telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+        }
+        else {
+                    telemetry.addData("Visable Target", "none");
+        }
+            telemetry.update();
+        }
     }
-}
