@@ -154,7 +154,7 @@ public class Hanger {
 				switch(dropOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4650)) { // 5000 is max on encoder as a backup
+                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4800)) { // 4800 is max on encoder as a backup
                             stopHook();
                             release();
                             retractOrder = Order.INIT;
@@ -174,7 +174,7 @@ public class Hanger {
                 switch(hangOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4650)) { // 5000 is max on encoder as a backup
+                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4800)) { // 4800 is max on encoder as a backup
                             stopHook();
                             grip();
                             retractOrder = Order.INIT;
