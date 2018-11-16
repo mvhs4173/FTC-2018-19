@@ -6,6 +6,7 @@ import android.view.SurfaceView;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 
 import static org.opencv.core.CvType.CV_32FC3;
@@ -42,18 +43,26 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
     @Override
     public Mat onCameraFrame(Mat inputFrame) {
         Mat image = inputFrame;
-        //Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2BGR);
+
+        ObjectDetectionResult cubeResult = processor.yellowCubeFilter(image);
+        Point cubePosition = cubeResult.getObjectPosition();
+
         try {
             if (FtcRobotControllerActivity.seekBar1 != null && FtcRobotControllerActivity.resultText != null) {
                 double L = Math.floor(FtcRobotControllerActivity.seekBar1.getProgress()*2.55);
                 double A = Math.floor(FtcRobotControllerActivity.seekBar2.getProgress()*2.55);
                 double B = Math.floor(FtcRobotControllerActivity.seekBar3.getProgress()*2.55);
                 //FtcRobotControllerActivity.resultText.setText(String.valueOf(L) + ", " + String.valueOf(A) + ", " + String.valueOf(B));
+                FtcRobotControllerActivity.resultText.setText(String.valueOf(cubePosition.x) + ", " + String.valueOf(cubePosition.y));
             }
         }catch (Throwable e) {
             Log.d("VISION ERROR", e.toString());
         }
 
-        return processor.yellowCubeFilter(image);
+
+
+
+
+        return cubeResult.getImage();
     }
 }

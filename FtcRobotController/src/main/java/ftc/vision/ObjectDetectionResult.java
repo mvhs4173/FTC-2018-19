@@ -28,7 +28,7 @@ public class ObjectDetectionResult {
 
     /**
      * Gets the position of the object, if detected
-     * @return A Point object holding the X and Y coordinates of detected object
+     * @return A Point object holding the X and Y coordinates of detected object if no object is found the coordinates will be (-1, -1)
      */
     public Point getObjectPosition() {
         return objectPosition;

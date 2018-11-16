@@ -28,7 +28,7 @@ public class ElementRecognizer {
 
 
 
-    public Mat yellowCubeFilter(Mat image) {
+    public ObjectDetectionResult yellowCubeFilter(Mat image) {
         Mat cannyImage = new Mat();
         Mat filteredImage = new Mat();
         Mat hsv = new Mat();
@@ -36,8 +36,9 @@ public class ElementRecognizer {
 
         Mat grayImage = new Mat();
         Mat blurredImage = new Mat();
-        Mat threshedImage = new Mat();
         Mat outImage = new Mat();
+
+        Point cubePosition = new Point(-1, -1);
 
         try {
 
@@ -68,7 +69,7 @@ public class ElementRecognizer {
             //Check all the contours and get the contour with largest area
             Iterator<MatOfPoint> contourIterator = contours.iterator();
             double largestArea = 0.0;
-            List<MatOfPoint> boxPoints = new ArrayList<>();
+            List<MatOfPoint> targetContours = new ArrayList<>();
             int index = 0;
             int largestIndex = 0;
 
@@ -77,42 +78,29 @@ public class ElementRecognizer {
 
                 double area = Imgproc.contourArea(currentContour);
 
-                //Aproximate the contours
-                double epsilon = 0.03*Imgproc.arcLength(new MatOfPoint2f(currentContour.toArray()), true);
-                MatOfPoint2f approx = new MatOfPoint2f();
-                Imgproc.approxPolyDP(new MatOfPoint2f(currentContour.toArray()), approx, epsilon, true);
-
-
-                int numVerts = approx.toArray().length;
-                //FtcRobotControllerActivity.resultText.setText(String.valueOf(numVerts));
                 //Make sure its in a basic square/cube shape
-                if (numVerts >= 4 && area >= 30) {
+                if (area >= 30) {
                     //Get a bounding box
-                    RotatedRect boundingBox = Imgproc.minAreaRect(approx);
+                    Rect positionBox = Imgproc.boundingRect(currentContour);
 
-                    Point[] vertices = new Point[4];
-                    boundingBox.points(vertices);//Get vertices
-                    MatOfPoint verts = new MatOfPoint(vertices);
-                    Rect bBox = Imgproc.boundingRect(verts);
-                    int ratio = bBox.width/bBox.height;
+                    //Only use object in the bottom half of the screen
+                    if (area > largestArea && positionBox.x >= 176/2) {
 
-
-                    if (area > largestArea) {
                         largestIndex = index;
                         largestArea = area;
-                        boxPoints.add(new MatOfPoint(vertices));
+                        targetContours.add(currentContour);
                         index++;
                     }
                 }
             }
 
             //If there is anything detected
-            if (largestIndex > 0) {
-                Rect boundingBox = Imgproc.boundingRect(boxPoints.get(largestIndex));
+            if (targetContours.size() > 0) {
+                Rect boundingBox = Imgproc.boundingRect(targetContours.get(largestIndex));
                 Imgproc.rectangle(image, new Point(boundingBox.x, boundingBox.y), new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height), new Scalar(0, 255, 0));
 
                 //The position of the cube in the image
-                Point cubePosition = new Point(boundingBox.x + (boundingBox.width/2), boundingBox.y + (boundingBox.height/2));
+                cubePosition = new Point(boundingBox.x + (boundingBox.width/2), boundingBox.y + (boundingBox.height/2));
             }
             //Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 3);
             //Rect boundingBox = Imgproc.boundingRect((MatOfPoint)contour);
@@ -130,6 +118,8 @@ public class ElementRecognizer {
             outImage = cannyImage;
         }
 
-        return outImage;
+        //Set up the result
+        ObjectDetectionResult result = new ObjectDetectionResult(outImage, cubePosition);
+        return result;
     }
 }
