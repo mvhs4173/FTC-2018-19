@@ -40,13 +40,19 @@ public class Testing_TeleOp extends OpMode {
     }
 
     @Override
-    public void start(){
+    public void start() {
 
     }
 
     @Override
     public void loop() {
         try {
+            if (gamepad1.y){
+                extender.extendHook();
+            } else if (gamepad1.a) {
+                extender.retractHook();
+            }
+
             telemetry.addData("stop state", extender.getState()[0]);
             telemetry.addData("lower state", extender.getState()[1]);
             telemetry.addData("POS", extender.getPosition());
