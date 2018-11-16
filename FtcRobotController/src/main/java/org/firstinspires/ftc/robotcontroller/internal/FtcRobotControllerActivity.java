@@ -188,6 +188,8 @@ public class FtcRobotControllerActivity extends Activity
     public static SeekBar seekBar3 = null;
     public static TextView resultText = null;
 
+    public static int viewType = 1;//Indicates what image to show
+
   ///////Vision Processing////////
       public static CameraBridgeViewBase cameraViewBase = null;
 
@@ -205,14 +207,12 @@ public class FtcRobotControllerActivity extends Activity
           Log.d(TAG, "Created");
       }
 
-
-
-
-
-
-
     public void frameButtonOnClick(View v){
+        viewType++;
 
+        if (viewType > 3) {
+            viewType = 1;
+        }
     }
 
       void myOnPause(){
