@@ -26,7 +26,7 @@ public class DriveTrainMechanum {
     }
 
     public void setDrivePower(double x1, double y, double x2){
-        double y1 = -y; // the game pad gives order negative number for forward. the math is looking for order positive for forward.
+        double y1 = -y; // the game pad gives a negative number for forward. the math is looking for a positive for forward.
         double r = Math.hypot(x1, y1);
         double robotAngle = Degrees.atan2(y1, x1) - 35; //Math.PI / 4;
         double rightX = x2*1;
