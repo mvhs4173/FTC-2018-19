@@ -19,6 +19,15 @@ public class ObjectDetectionResult {
     }
 
     /**
+     * Constructs a result with just an image, there is no cube detected in this image
+     * @param image The image in Mat format
+     */
+    public ObjectDetectionResult(Mat image) {
+        this.image = image;
+        this.objectPosition = new Point(-1, -1);
+    }
+
+    /**
      * Gets the image used in processing
      * @return The image in Mat format
      */

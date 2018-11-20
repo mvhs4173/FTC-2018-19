@@ -6,18 +6,20 @@ import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.imgproc.Moments;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import ftc.vision.FrameGrabber.ScreenOrientation;
+
+import static ftc.vision.FrameGrabber.ScreenOrientation.LANDSCAPE;
+import static ftc.vision.FrameGrabber.ScreenOrientation.PORTRAIT;
 
 
 public class ElementRecognizer {
@@ -28,7 +30,7 @@ public class ElementRecognizer {
 
 
 
-    public ObjectDetectionResult yellowCubeFilter(Mat image) {
+    public ObjectDetectionResult yellowCubeFilter(Mat image, ScreenOrientation orientation, Point screenDimensions) {
         Mat cannyImage = new Mat();
         Mat filteredImage = new Mat();
         Mat hsv = new Mat();
@@ -82,9 +84,15 @@ public class ElementRecognizer {
                 if (area >= 30) {
                     //Get a bounding box
                     Rect positionBox = Imgproc.boundingRect(currentContour);
+                    Point boxPosition = new Point(positionBox.x, positionBox.y);
+
+                    //Swap coordinates according to orientation
+                    if (orientation == PORTRAIT) {
+                        boxPosition = new Point(positionBox.y, positionBox.x);
+                    }
 
                     //Only use object in the bottom half of the screen
-                    if (area > largestArea && positionBox.x >= 176/2) {
+                    if (area > largestArea && boxPosition.y >= screenDimensions.y/2) {
 
                         largestIndex = index;
                         largestArea = area;
