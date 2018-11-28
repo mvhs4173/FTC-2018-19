@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import java.lang.reflect.Field;
-
 public class AutoPath {
     Task task;
     Start start;
@@ -114,9 +112,9 @@ public class AutoPath {
                             case MID:
                                 break;
                             case LEFT:
-                                    break;
+                                break;
                             case RIGHT:
-                                    break;
+                                break;
                             default:
                         }
                         if (markerArm.release()) task = Task.PARK;
