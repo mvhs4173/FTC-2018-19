@@ -58,7 +58,7 @@ public class Hanger {
     }
 
     public void release() {
-        currentPos = 0.1;
+        currentPos = 0.05;
         clawServo.setPosition(currentPos);
     }
 
