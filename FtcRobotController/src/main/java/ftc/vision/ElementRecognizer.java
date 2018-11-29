@@ -42,6 +42,8 @@ public class ElementRecognizer {
 
         Point cubePosition = new Point(-1, -1);
 
+        Size cubeSize = new Size(0, 0);
+
         try {
 
             List<MatOfPoint> contours = new ArrayList<>();
@@ -55,7 +57,7 @@ public class ElementRecognizer {
 
             //Color values to filter for in HSV format
             Scalar maxRange = new Scalar(109, 255, 255);
-            Scalar lowestRange = new Scalar(73, 170, 158);
+            Scalar lowestRange = new Scalar(72, 170, 145);
 
             Core.inRange(hsv, lowestRange, maxRange, mask);//Get only the pixels in the correct color range
 
@@ -92,7 +94,7 @@ public class ElementRecognizer {
                     }
 
                     //Only use object in the bottom half of the screen
-                    if (area > largestArea && boxPosition.y >= screenDimensions.y/2) {
+                    if (area > largestArea && boxPosition.y >= screenDimensions.y/1.5) {
 
                         largestIndex = index;
                         largestArea = area;
@@ -105,6 +107,10 @@ public class ElementRecognizer {
             //If there is anything detected
             if (targetContours.size() > 0) {
                 Rect boundingBox = Imgproc.boundingRect(targetContours.get(largestIndex));
+
+                cubeSize.height = boundingBox.height;
+                cubeSize.width = boundingBox.width;
+
                 Imgproc.rectangle(image, new Point(boundingBox.x, boundingBox.y), new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height), new Scalar(0, 255, 0));
 
                 //The position of the cube in the image
@@ -127,7 +133,7 @@ public class ElementRecognizer {
         }
 
         //Set up the result
-        ObjectDetectionResult result = new ObjectDetectionResult(outImage, cubePosition);
+        ObjectDetectionResult result = new ObjectDetectionResult(outImage, cubePosition, cubeSize);
         return result;
     }
 }

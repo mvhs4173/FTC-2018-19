@@ -39,6 +39,9 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
     private int absFrameWidth;//Absolute frame width
     private int absFrameHeight;//Absolute frame height
 
+    public double lastWidth = 0.0;
+    public double lastHeight = 0.0;
+
     public FrameGrabber(CameraBridgeViewBase cameraBridgeViewBase, int frameWidth, int frameHeight) {
 
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -52,6 +55,10 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
         screenDimensions = new Point(frameWidth, frameHeight);
 
         processor = new ElementRecognizer();
+    }
+
+    public Point getScreenDimensions() {
+        return screenDimensions;
     }
 
     @Override
@@ -93,8 +100,10 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
 
             Mat rImage = currentResult.getImage();
 
-            currentResult = new ObjectDetectionResult(rImage, swappedPosition);
+            currentResult = new ObjectDetectionResult(rImage, swappedPosition, currentResult.getObjectSize());
         }
+
+
 
         try {
             if (FtcRobotControllerActivity.seekBar1 != null && FtcRobotControllerActivity.resultText != null) {
@@ -102,7 +111,12 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
                 double A = Math.floor(FtcRobotControllerActivity.seekBar2.getProgress()*2.55);
                 double B = Math.floor(FtcRobotControllerActivity.seekBar3.getProgress()*2.55);
                 //FtcRobotControllerActivity.resultText.setText(String.valueOf(L) + ", " + String.valueOf(A) + ", " + String.valueOf(B));
-                FtcRobotControllerActivity.resultText.setText(String.valueOf(currentResult.getObjectPosition().x) + ", " + String.valueOf(currentResult.getObjectPosition().y));
+
+
+                lastWidth = currentResult.getObjectSize().width;
+                lastHeight = currentResult.getObjectSize().height;
+
+                FtcRobotControllerActivity.resultText.setText(String.valueOf(lastWidth) + ", " + String.valueOf(lastHeight));
             }
         }catch (Throwable e) {
             Log.d("VISION ERROR", e.toString());

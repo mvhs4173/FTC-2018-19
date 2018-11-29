@@ -90,6 +90,14 @@ public class DriveTrain {
         return error[0] == 0;
     }
 
+    public double getLeftInchesDriven() {
+        return getEncoderPos()[0];
+    }
+
+    public double getRightInchesDriven() {
+        return getEncoderPos()[1];
+    }
+
     void rotateToAngle(double desiredAngle) {
         double error = desiredAngle - compass.getHeading();
         if (error > 0) {
