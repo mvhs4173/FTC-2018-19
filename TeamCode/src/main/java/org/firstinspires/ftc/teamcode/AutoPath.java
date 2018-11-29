@@ -112,9 +112,9 @@ public class AutoPath {
                             case MID:
                                 break;
                             case LEFT:
-                                    break;
+                                break;
                             case RIGHT:
-                                    break;
+                                break;
                             default:
                         }
                         if (markerArm.release()) task = Task.PARK;

@@ -1,0 +1,49 @@
+In order to find what caused an error such as nullpointerexception in
+you code do the following.
+
+1. Create a 'FormatStackTrace' function just copy this code into your program
+
+public String FormatStackTrace(Exception e) {
+        String msg = "Exception: " + e.toString();
+        for(StackTraceElement ste : e.getStackTrace()) {
+            msg = msg + " -> " + ste.toString();
+        }
+        return msg;
+}
+
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+2. Put all the code in you init and loop blocks into a try block like so
+
+void init() {
+	try{
+	    //Init code here
+	}
+}
+
+void loop() {
+	try{
+		//Loop code here
+	}
+}
+
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+3. After the try blocks in your loop and init blocks put in a 'catch' block below it
+and put the following code into it
+
+	try{
+        //Loop code here
+    }catch(Exception e) {
+        telemetry.addData("Say", FormatStackTrace(e));
+        telemetry.update();
+        throw e;
+    }
+
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
