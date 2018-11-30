@@ -39,7 +39,6 @@ public class MarkerArm {
      * @param increase button to increase servo position
      */
     public void moveServo(boolean decrease, boolean increase) {
-
         if (decreaseValue.wasJustClicked(decrease)) {
             currentPos += 0.01;
         } else if (increaseValue.wasJustClicked(increase)) {
