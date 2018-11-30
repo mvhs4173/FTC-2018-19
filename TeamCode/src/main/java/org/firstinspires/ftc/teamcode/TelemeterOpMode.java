@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Main Loop", group = "Auto")
 public class TelemeterOpMode extends OpMode {
+
     //Objects
     Hardware hardware = new Hardware();
     DriveTrain driveTrain;
@@ -40,7 +41,8 @@ public class TelemeterOpMode extends OpMode {
     }
 
     @Override
-    public void start() {
+    public void start(){
+
     }
 
     @Override
@@ -53,8 +55,8 @@ public class TelemeterOpMode extends OpMode {
             extender.init(Hanger.Task.DROP);
         }
         extender.execute(gamepad1.a);
-        if (gamepad1.dpad_right) extender.release();
-        if (gamepad1.dpad_left) extender.grip();
+        if (gamepad1.b) extender.release();
+        if (gamepad1.x) extender.grip();
         telemetry.addData("stop state", extender.getState()[0]);
         telemetry.addData("lower state", extender.getState()[1]);
         telemetry.addData("POS", extender.getPosition());

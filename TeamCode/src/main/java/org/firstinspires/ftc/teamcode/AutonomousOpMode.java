@@ -60,9 +60,29 @@ public class AutonomousOpMode extends OpMode {
         telemetry.update();
     }
 
+    double desiredAngle = 0;
     @Override
     public void loop() {
         auto.execute();
+        //driveTrain.maintainHeading(0);
+        /*
+        if (omega.wasJustClicked(gamepad1.a)){
+            desiredAngle += 20;
+        } else if (omega.wasJustClicked(gamepad1.b)) {
+            desiredAngle -= 20;
+        }
+        driveTrain.maintainHeading(desiredAngle);
+
+        driveTrain.rotateToAngle(desiredAngle);
+        */
+        telemetry.addData("Team", team);
+        telemetry.addData("Start", start);
+        telemetry.addData("Raw Compass", hardware.compass.getRawHeading());
+        telemetry.addData("heading", hardware.compass.getHeading());
+        telemetry.addData("OriginAngle", hardware.compass.getOriginalRawHeading());
+        telemetry.addData("DesiredAngle", desiredAngle);
+        telemetry.addData("newSpeed", driveTrain.left.getPower());
+        telemetry.update();
         /*
         if (vision == null) {
             vision = new Vision();
