@@ -28,7 +28,11 @@ public class ElementRecognizer {
 
     }
 
-
+    Point lastCubePosition = new Point(-1, -1);
+    double lastCubeArea = 0.0;
+    MatOfPoint lastContour = null;
+    double lastCubeWidth = 0.0;
+    double lastCubeHeight = 0.0;
 
     public ObjectDetectionResult yellowCubeFilter(Mat image, ScreenOrientation orientation, Point screenDimensions) {
         Mat cannyImage = new Mat();
@@ -41,6 +45,7 @@ public class ElementRecognizer {
         Mat outImage = new Mat();
 
         Point cubePosition = new Point(-1, -1);
+
 
         Size cubeSize = new Size(0, 0);
 
@@ -57,7 +62,7 @@ public class ElementRecognizer {
 
             //Color values to filter for in HSV format
             Scalar maxRange = new Scalar(109, 255, 255);
-            Scalar lowestRange = new Scalar(72, 170, 145);
+            Scalar lowestRange = new Scalar(72, 160, 145);
 
             Core.inRange(hsv, lowestRange, maxRange, mask);//Get only the pixels in the correct color range
 
@@ -83,7 +88,7 @@ public class ElementRecognizer {
                 double area = Imgproc.contourArea(currentContour);
 
                 //Make sure its in a basic square/cube shape
-                if (area >= 30) {
+                if (area >= 5) {
                     //Get a bounding box
                     Rect positionBox = Imgproc.boundingRect(currentContour);
                     Point boxPosition = new Point(positionBox.x, positionBox.y);
@@ -111,10 +116,35 @@ public class ElementRecognizer {
                 cubeSize.height = boundingBox.height;
                 cubeSize.width = boundingBox.width;
 
+                cubePosition = new Point(boundingBox.x + (boundingBox.width/2), boundingBox.y + (boundingBox.height/2));
+
+                //Check if the new cube position is within the position of the last one
+                if (lastCubePosition.x != -1) {
+                    //If the cube is within the area of the last cube on the X axis
+                    if (Math.abs(cubePosition.x - lastCubePosition.x) < lastCubeWidth/2) {
+                        //If the cube is within the area of the last cube on the Y axis
+                        if (Math.abs(cubePosition.y - lastCubePosition.y) < lastCubeHeight/2) {
+                            //Now if the area of the last cube is larger than the current one then use the last cube
+                            if (lastCubeArea > cubeSize.height * cubeSize.width) {
+                                //Use the last cube position and box
+                                cubeSize.height = lastCubeHeight;
+                                cubeSize.width = lastCubeWidth;
+                                boundingBox = Imgproc.boundingRect(lastContour);
+                                cubePosition = lastCubePosition;
+                            }
+                        }
+                    }
+                }
+
                 Imgproc.rectangle(image, new Point(boundingBox.x, boundingBox.y), new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height), new Scalar(0, 255, 0));
 
                 //The position of the cube in the image
-                cubePosition = new Point(boundingBox.x + (boundingBox.width/2), boundingBox.y + (boundingBox.height/2));
+
+                lastCubePosition = cubePosition;
+                lastCubeArea = cubeSize.height * cubeSize.width;
+                lastCubeWidth = cubeSize.width;
+                lastCubeHeight = cubeSize.height;
+                lastContour = targetContours.get(largestIndex);
             }
             //Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 3);
             //Rect boundingBox = Imgproc.boundingRect((MatOfPoint)contour);
