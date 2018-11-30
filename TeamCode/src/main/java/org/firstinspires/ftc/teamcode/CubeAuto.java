@@ -59,9 +59,6 @@ public class CubeAuto extends OpMode {
     double leftOriginDist = 0.0;//How far the left motor has traveled used as a relative point so that we can 'reset' encoders
     double rightOriginDist = 0.0;
 
-    int numTimesAligned = 0;//The number of iterations the robot is lined up with the cube this is to make sure it doesnt overshoot when we cut power to the motors
-
-
 
     @Override
     public void loop() {
@@ -109,11 +106,9 @@ public class CubeAuto extends OpMode {
                         driveTrain.left.setPower(newSpeed);
                         driveTrain.right.setPower(-newSpeed);
                 } else {
-                    numTimesAligned++;
-
                     //If the robot has been aligned for the past 20 iterations then say its finished
                     //This is to prevent overshoot when we cut power to the motor
-                    if (numTimesAligned >= 20) {
+                    if (Math.abs(newSpeed) <= 0.02) {
                         aligned = true;//Say the robot is aligned and stop the motors
                         driveTrain.left.setPower(0.0);
                         driveTrain.right.setPower(0.0);
