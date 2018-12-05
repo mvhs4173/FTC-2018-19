@@ -62,14 +62,14 @@ public class AutoPath {
                 hanger.task = Hanger.Task.DROP;
                 hanger.execute(false);
                 if (hanger.dropOrder == Hanger.Order.DONE){
-                    sigma.init(2.5/3.0);
+                    sigma.init(6.5/3.0);
                     task = Task.DRIVE;
                 }
                 break;
             case DRIVE:
                 if (!sigma.isTimerUp()) {
-                    driveTrain.left.setPower(-1);
-                    driveTrain.right.setPower(-1);
+                    driveTrain.left.setPower(1);
+                    driveTrain.right.setPower(1);
                 } else if (sigma.isTimerUp()){
                     driveTrain.stopMotors();
                     task = Task.FINDGOLD;
@@ -77,6 +77,7 @@ public class AutoPath {
                 break;
             case FINDGOLD:
                 samplePosition = SamplePosition.MID;
+                markerArm.intiTime(2.0/3.0);
                 task = Task.CLAIM;
                 sigma.disable();
                 switch (samplePosition){
@@ -90,10 +91,6 @@ public class AutoPath {
                 }
                 break;
             case CLAIM:
-                if (markerArm.release()) {
-                    task = Task.PARK;
-                    omikron.init(1.25/3.0);
-                }
                 switch (start) {
                     case GOLD:
                         switch (samplePosition){
@@ -105,7 +102,10 @@ public class AutoPath {
                                 break;
                             default:
                         }
-                        if (markerArm.release()) task = Task.PARK;
+                        if (markerArm.release()) {
+                            task = Task.PARK;
+                            omikron.init(4.0/3.0);
+                        }
                         break;
                     case SILVER:
                         switch (samplePosition){
@@ -117,15 +117,18 @@ public class AutoPath {
                                 break;
                             default:
                         }
-                        if (markerArm.release()) task = Task.PARK;
+                        if (markerArm.release()) {
+                            task = Task.PARK;
+                            omikron.init(4.0/3.0);
+                        }
                         break;
                     default:
                 }
                 break;
             case PARK:
                 if (!omikron.isTimerUp()) {
-                    driveTrain.left.setPower(1);
-                    driveTrain.right.setPower(1);
+                    driveTrain.left.setPower(-1);
+                    driveTrain.right.setPower(-1);
                 } else if (omikron.isTimerUp()){
                     driveTrain.stopMotors();
                     task = Task.DONE;

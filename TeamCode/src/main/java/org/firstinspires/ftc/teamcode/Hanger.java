@@ -92,6 +92,20 @@ public class Hanger {
         extensionMotor.setPower(0);
     }
 
+    public boolean resetZero() {
+        if (extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        if (lowerLim.getState()){
+            extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            stopHook();
+            return true;
+        } else {
+            extensionMotor.setPower(-0.5);
+            return false;
+        }
+    }
+
     public void retractHook() {
         switch (retractOrder) {
             case INIT:
@@ -132,7 +146,8 @@ public class Hanger {
     enum Task{
         HANG,
         DROP,
-        Float
+        Float,
+        RESET
     }
 
     public enum Order{
@@ -154,15 +169,18 @@ public class Hanger {
 				switch(dropOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4650)) { // 4800 is max on encoder as a backup
+                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4600)) { // 4800 is max on encoder as a backup
                             stopHook();
                             release();
+                            psi.init(1);
                             retractOrder = Order.INIT;
                             dropOrder = Order.RUN;
                         }
                         break;
                     case RUN:
-                        retractHook();
+                        if (psi.isTimerUp()) {
+                            retractHook();
+                        }
                         if (retractOrder == Order.DONE) dropOrder = Order.DONE;
                         break;
                     case DONE:
@@ -174,7 +192,7 @@ public class Hanger {
                 switch(hangOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4650)) { // 4800 is max on encoder as a backup
+                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4600)) { // 4800 is max on encoder as a backup
                             stopHook();
                             grip();
                             retractOrder = Order.INIT;
@@ -192,6 +210,9 @@ public class Hanger {
                         stopHook();
                         task = Task.Float;
                 }
+                break;
+            case RESET:
+                if (resetZero()) task = Task.Float;
                 break;
             case Float:
                 break;

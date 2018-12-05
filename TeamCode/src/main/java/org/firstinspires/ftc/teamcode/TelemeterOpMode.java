@@ -54,6 +54,7 @@ public class TelemeterOpMode extends OpMode {
         } else if (down.wasJustClicked(gamepad1.dpad_down)) {
             extender.init(Hanger.Task.DROP);
         }
+        if (gamepad1.y) extender.init(Hanger.Task.RESET);
         extender.execute(gamepad1.a);
         if (gamepad1.b) extender.release();
         if (gamepad1.x) extender.grip();
