@@ -1,10 +1,12 @@
 package ftc.vision;
 
+import android.graphics.Camera;
 import android.util.Log;
 import android.view.SurfaceView;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
@@ -20,7 +22,7 @@ import static org.opencv.core.CvType.CV_32FC3;
  */
 public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
 
-    ElementRecognizer processor;
+    public ElementRecognizer processor;
     ObjectDetectionResult currentResult;
 
     public enum DetectionMode {
@@ -33,17 +35,25 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
         LANDSCAPE;
     }
 
+    public enum CameraSide {
+        FRONT,
+        REAR;
+    }
+
     private DetectionMode detectionMode = NONE;
     private ScreenOrientation screenOrientation = LANDSCAPE;
     private Point screenDimensions;
     private int absFrameWidth;//Absolute frame width
     private int absFrameHeight;//Absolute frame height
+    private CameraBridgeViewBase cameraBridgeViewBase;
+
+    private CameraSide cameraSide = CameraSide.REAR;
 
     public double lastWidth = 0.0;
     public double lastHeight = 0.0;
 
     public FrameGrabber(CameraBridgeViewBase cameraBridgeViewBase, int frameWidth, int frameHeight) {
-
+        this.cameraBridgeViewBase = cameraBridgeViewBase;
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
         cameraBridgeViewBase.setMinimumWidth(frameWidth);
         cameraBridgeViewBase.setMinimumHeight(frameHeight);
@@ -55,6 +65,27 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
         screenDimensions = new Point(frameWidth, frameHeight);
 
         processor = new ElementRecognizer();
+    }
+
+    /**
+     * Sets which camera on the phone to use
+     * @param camSide An Enum indicating which camera to use, either the Front facing camera or Rear camera
+     */
+    public void setCameraSide(CameraSide camSide) {
+        cameraSide = camSide;
+        if (camSide == CameraSide.FRONT) {
+            cameraBridgeViewBase.setCameraIndex(1);
+        }else {
+            cameraBridgeViewBase.setCameraIndex(0);
+        }
+    }
+
+    /**
+     * Gets which camera on the phone you are using
+     * @return An Enum indicating which camera is being used
+     */
+    public CameraSide getCameraSide() {
+        return cameraSide;
     }
 
     public Point getScreenDimensions() {
@@ -74,6 +105,11 @@ public class FrameGrabber implements CameraBridgeViewBase.CvCameraViewListener {
     @Override
     public Mat onCameraFrame(Mat inputFrame) {
         Mat image = inputFrame;
+
+        //Mirror the image if the Front facing camera is being used
+        if (cameraSide == CameraSide.FRONT) {
+            Core.flip(image, image,  1);
+        }
 
         //Determine what the camera should be recognizing
         switch (detectionMode) {
