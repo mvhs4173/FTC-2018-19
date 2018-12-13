@@ -181,30 +181,31 @@ public class ElementRecognizer {
                 lastContour = targetContours.get(largestIndex);
 
             }else { //If we didnt detect any cube in this frame then estimate where the cube is
+                if (currentCubeVelocity.x == 0.0 && currentCubeVelocity.y == 0.0) {
+                    //Esimate the x and y coordinates
+                    double x = lastCubePosition.x;
+                    double y = lastCubePosition.y;
 
-                //Esimate the x and y coordinates
-                double x = lastCubePosition.x + currentCubeVelocity.x;
-                double y = lastCubePosition.y + currentCubeVelocity.y;
+                    //If the cube goes above the point where we dont recognize cubes then just say we dont see it anymore
+                    if (y < screenDimensions.y / 2) {
+                        x = -1.0;
+                        y = -1.0;
+                    }
 
-                //If the cube goes above the point where we dont recognize cubes then just say we dont see it anymore
-                if (y < screenDimensions.y/2) {
-                    x = -1.0;
-                    y = -1.0;
+                    cubePosition = new Point(x, y);//Create the point
+
+                    //Now use the last contour to create a bounding box for the estimated position
+
+                    //Find the bounds of the box
+                    Point topLeftCorner = new Point(cubePosition.x - lastCubeWidth / 2, cubePosition.y - lastCubeHeight / 2);
+                    Point bottomRightCorner = new Point(cubePosition.x + lastCubeWidth / 2, cubePosition.y + lastCubeHeight / 2);
+                    Imgproc.rectangle(image, topLeftCorner, bottomRightCorner, new Scalar(0, 255, 0));//Draw rectangle on screen
+
+                    lastCubePosition = cubePosition;//Set the last cube position for the next loop
+
+                    cubeSize.width = lastCubeWidth;
+                    cubeSize.height = lastCubeHeight;
                 }
-
-                cubePosition = new Point(x, y);//Create the point
-
-                //Now use the last contour to create a bounding box for the estimated position
-
-                //Find the bounds of the box
-                Point topLeftCorner = new Point(cubePosition.x - lastCubeWidth/2, cubePosition.y - lastCubeHeight/2);
-                Point bottomRightCorner = new Point(cubePosition.x + lastCubeWidth/2, cubePosition.y + lastCubeHeight/2);
-                Imgproc.rectangle(image, topLeftCorner, bottomRightCorner, new Scalar(0, 255, 0));//Draw rectangle on screen
-
-                lastCubePosition = cubePosition;//Set the last cube position for the next loop
-
-                cubeSize.width = lastCubeWidth;
-                cubeSize.height = lastCubeHeight;
             }
             //Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 3);
             //Rect boundingBox = Imgproc.boundingRect((MatOfPoint)contour);

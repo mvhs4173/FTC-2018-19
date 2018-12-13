@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Point;
 
 import ftc.vision.FrameGrabber;
@@ -14,7 +15,7 @@ import ftc.vision.ObjectDetectionResult;
 public class CubeAuto extends OpMode {
 
     public static Hardware hardware = new Hardware();
-    //DriveTrain driveTrain;
+    DriveTrain driveTrain;
     FrameGrabber vision;//The thing that gets the next frame from the camera
     Point lastObjectPosition = new Point(-1, -1);
     double lastDetectionTime = 0.0;//The last time that the camera detected an object in the frame
@@ -23,7 +24,7 @@ public class CubeAuto extends OpMode {
     //PID//
     double lastLoopTime = 0.0;//The time of last loop()
     double allowedError = 5.0;
-    double pFactor = 0.001;
+    double pFactor = 0.0015;
     double dFactor = 0.0;
     double lastError = 0.0;
     ////////
@@ -33,14 +34,16 @@ public class CubeAuto extends OpMode {
     yButton = new ToggleButton(),
     xButton = new ToggleButton(),
     bButton = new ToggleButton();
-
+    public static Telemetry t;
 
     //Vision vision;
     @Override
     public void init() {
-        //hardware.init(hardwareMap);
-        //driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.compass);
+        t = telemetry;
+        hardware.init(hardwareMap);
+        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.compass);
         vision = FtcRobotControllerActivity.frameGrabber;
+
         timer = new Timer();
     }
 
@@ -58,12 +61,10 @@ public class CubeAuto extends OpMode {
     double pixelPerInch = 13.0/30.0;//13 pixels divided by 30 inches
     double distanceToCube = -1.0;//-1 meaning we have not calculated a distance
 
-    double leftOriginDist = 0.0;//How far the left motor has traveled used as a relative point so that we can 'reset' encoders
-    double rightOriginDist = 0.0;
 
     @Override
     public void loop() {
-        double currentLoopTime = System.currentTimeMillis() / 1000;//The current time of the loop in seconds since unix epoch
+        /*double currentLoopTime = System.currentTimeMillis() / 1000;//The current time of the loop in seconds since unix epoch
         double currentError = 0.0;
         double newSpeed = 0.0;
 
@@ -128,32 +129,27 @@ public class CubeAuto extends OpMode {
 
                 //If the robot is not lined up
                 if (Math.abs(currentError) > allowedError) {
-                        //driveTrain.left.setPower(-proportionalNumber);
-                        //driveTrain.right.setPower(proportionalNumber);
+                        driveTrain.left.setPower(-proportionalNumber);
+                        driveTrain.right.setPower(proportionalNumber);
                 } else {
                     //If the robot has been aligned for the past 20 iterations then say its finished
                     //This is to prevent overshoot when we cut power to the motor
                     if (Math.abs(newSpeed) <= 0.01) {
-                        //aligned = true;//Say the robot is aligned and stop the motors
+                        aligned = true;//Say the robot is aligned and stop the motors
 
                         distanceToCube = processingResult.getObjectSize().height/pixelPerInch + 3.0;
 
-                        //driveTrain.left.setPower(0.0);
-                        //driveTrain.right.setPower(0.0);
+                        driveTrain.left.setPower(0.0);
+                        driveTrain.right.setPower(0.0);
+
+                        driveTrain.resetLeftEncoder();
+                        driveTrain.resetRightEncoder();
                     }
                 };
             }
 
-            /*//If the robot has not been aligned with the cube yet
-            if (!aligned) {
-                //Turn in place
-                rightOriginDist = driveTrain.getRightInchesDriven();
-                leftOriginDist = driveTrain.getLeftInchesDriven();
-            }
-
-        //If the robot is aligned with the cube prepare to move forward
             if (aligned) {
-                double inchesDriven = ((driveTrain.getLeftInchesDriven() - leftOriginDist) + (driveTrain.getRightInchesDriven() - rightOriginDist))/2;
+                double inchesDriven = ((driveTrain.getLeftInchesDriven()) + (driveTrain.getRightInchesDriven()))/2;
 
                 if (inchesDriven < distanceToCube) {
                     driveTrain.right.setPower(0.5);
@@ -164,19 +160,45 @@ public class CubeAuto extends OpMode {
                 }
                 telemetry.addData("Inches to cube", distanceToCube);
                 telemetry.addData("Inches driven", inchesDriven);
-            }*/
+            }
 
             lastLoopTime = System.currentTimeMillis() / 1000;
             lastError = currentError;
 
 
+        }*/
+//        telemetry.addData("Current Error:", currentError);
+
+        boolean xPressed = xButton.wasJustClicked(gamepad1.x);
+        boolean bPressed = bButton.wasJustClicked(gamepad1.b);
+        boolean aPressed = aButton.wasJustClicked(gamepad1.a);
+        boolean yPressed = yButton.wasJustClicked(gamepad1.y);
+
+        if (xPressed) {
+            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() - 0.01);
+        } else if (bPressed) {
+            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() + 0.01);
         }
-        telemetry.addData("Cube Velocity: ", String.valueOf(vision.processor.currentCubeVelocity.x) + ", " + String.valueOf(vision.processor.currentCubeVelocity.y));
-        telemetry.addData("Current Error:", currentError);
-        telemetry.addData("pFactor: ", pFactor);
-        telemetry.addData("Cube Aligned: ", aligned);
-        telemetry.addData("Turn speed", newSpeed);
-        telemetry.addData("Cube Position:", String.valueOf(cubePosition.x) + ", " + String.valueOf(cubePosition.y));
+
+        //Increase or decrease pFactor by one thousandth
+        if (aPressed) {
+            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() - 0.001);
+        } else if (yPressed) {
+            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() + 0.001);
+        }
+
+        driveTrain.driveLeftIPS(2.0);
+        driveTrain.driveRightIPS(2.0);
+        telemetry.addData("Right Ticks: ", driveTrain.right.getCurrentPosition());
+        telemetry.addData("Left Ticks: ", driveTrain.left.getCurrentPosition());
+        telemetry.addData("pFactor: ", driveTrain.getSpeedPFactor());
+        telemetry.addData("Left Measured Power: ", driveTrain.left.getPower());
+        telemetry.addData("Left Speed IPS: ", driveTrain.getLeftSpeedIPS());
+        telemetry.addData("Right Speed IPS: ", driveTrain.getRightSpeedIPS());
+      //  telemetry.addData("Cube Aligned: ", aligned);
+  //      telemetry.addData("Turn speed", newSpeed);
+    //    telemetry.addData("Cube Position:", String.valueOf(cubePosition.x) + ", " + String.valueOf(cubePosition.y));
         telemetry.update();
+
     }
 }

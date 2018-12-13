@@ -12,6 +12,18 @@ public class DriveTrain {
     private double clicksPerRev = 280;
     private double clicksPerInch = clicksPerRev/(Math.PI*wheelDiameter); // clicks/rev * (inch/rev)^-1
 
+    //Speed controller Variables
+    double speedP = 0.001;//Speed proprotional factor
+    double lastInchesDrivenLeft = 0.0;
+    double lastInchesDrivenRight = 0.0;
+    double currentRightPower = 0.0;
+    double currentLeftPower = 0.0;
+    int loopIterationsPerSecond = 1000/20;
+
+    //What is considered '0' on the encoders
+    private int leftOriginPosition = 0;
+    private int rightOriginPosition = 0;
+
     /**
      * @param newLeft Left Motor
      * @param newRight Right Motor
@@ -19,6 +31,8 @@ public class DriveTrain {
     DriveTrain(DcMotor newLeft, DcMotor newRight, Compass compass){
         left = newLeft;
         right = newRight;
+        lastInchesDrivenLeft = getLeftInchesDriven();
+        lastInchesDrivenRight = getRightInchesDriven();
         this.compass = compass;
     }
 
@@ -39,7 +53,17 @@ public class DriveTrain {
     }
 
     int[] getEncoderPos() {
-        return new int[]{left.getCurrentPosition(),right.getCurrentPosition()};
+        return new int[]{left.getCurrentPosition() - leftOriginPosition, right.getCurrentPosition() - rightOriginPosition};
+    }
+
+    public void resetLeftEncoder() {
+        leftOriginPosition = left.getCurrentPosition();
+        lastInchesDrivenLeft = 0.0;
+    }
+
+    public void resetRightEncoder() {
+        rightOriginPosition = right.getCurrentPosition();
+        lastInchesDrivenRight = 0.0;
     }
 
     public boolean maintainHeading(double desiredHeading) {
@@ -91,11 +115,58 @@ public class DriveTrain {
     }
 
     public double getLeftInchesDriven() {
-        return getEncoderPos()[0];
+        double ticks = left.getCurrentPosition();
+        double revolutions = ticks/clicksPerRev;
+        double inchesDriven = revolutions * wheelDiameter;
+        return inchesDriven;
     }
 
     public double getRightInchesDriven() {
-        return getEncoderPos()[1];
+        double ticks = right.getCurrentPosition();
+        double revolutions = ticks/clicksPerRev;
+        double inchesDriven = revolutions * wheelDiameter;
+        return inchesDriven;
+    }
+
+    //Drive inches per second, must be called at 20ms intervals
+    public void driveLeftIPS(double ips) {
+        double currentIPS = getLeftSpeedIPS();
+        double error = ips - currentIPS;
+
+        double newPower = left.getPower() + error * speedP;
+        CubeAuto.t.addData("Left Power: ", newPower);
+        left.setPower(newPower);
+    }
+
+    public void driveRightIPS(double ips) {
+        double currentIPS = getRightSpeedIPS();
+        double error = ips - currentIPS;
+
+        double newPower = right.getPower() + error * speedP;
+        CubeAuto.t.addData("Right Power: ", newPower);
+        right.setPower(newPower);
+    }
+
+    public void setSpeedPFactor(double pFactor) {
+        speedP = pFactor;
+    }
+
+    public double getSpeedPFactor() {
+        return speedP;
+    }
+
+    public double getLeftSpeedIPS() {
+        double currentInchesDriven = getLeftInchesDriven();
+        double speed = (currentInchesDriven - lastInchesDrivenLeft) * loopIterationsPerSecond;
+        lastInchesDrivenLeft = currentInchesDriven;
+        return speed;
+    }
+
+    public double getRightSpeedIPS() {
+        double currentInchesDriven = getRightInchesDriven();
+        double speed = (currentInchesDriven - lastInchesDrivenRight) * loopIterationsPerSecond;
+        lastInchesDrivenRight = currentInchesDriven;
+        return speed;
     }
 
     void rotateToAngle(double desiredAngle) {
