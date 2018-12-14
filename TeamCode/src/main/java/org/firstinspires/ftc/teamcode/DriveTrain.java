@@ -13,7 +13,8 @@ public class DriveTrain {
     private double clicksPerInch = clicksPerRev/(Math.PI*wheelDiameter); // clicks/rev * (inch/rev)^-1
 
     //Speed controller Variables
-    double speedP = 0.001;//Speed proprotional factor
+    double rightSpeedP = 0.001;
+    double speedP = 0.0001;//Speed proprotional factor
     double lastInchesDrivenLeft = 0.0;
     double lastInchesDrivenRight = 0.0;
     double currentRightPower = 0.0;
@@ -48,8 +49,8 @@ public class DriveTrain {
             W=(1-Math.abs(Y))*(x /1)+ x,
             L=(V-W)/2,
             R=(V+W)/2;
-        left.setPower(L);
-        right.setPower(R);
+        left.setPower(-L);
+        right.setPower(-R);
     }
 
     int[] getEncoderPos() {
@@ -133,8 +134,8 @@ public class DriveTrain {
         double currentIPS = getLeftSpeedIPS();
         double error = ips - currentIPS;
 
-        double newPower = left.getPower() + error * speedP;
-        CubeAuto.t.addData("Left Power: ", newPower);
+        double newPower = left.getPower() + (error * speedP);
+        CubeAuto.t.addData("Left Adjustment: ", error*speedP);
         left.setPower(newPower);
     }
 
@@ -142,7 +143,7 @@ public class DriveTrain {
         double currentIPS = getRightSpeedIPS();
         double error = ips - currentIPS;
 
-        double newPower = right.getPower() + error * speedP;
+        double newPower = right.getPower() + (error * rightSpeedP);
         CubeAuto.t.addData("Right Power: ", newPower);
         right.setPower(newPower);
     }

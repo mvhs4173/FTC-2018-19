@@ -64,7 +64,7 @@ public class CubeAuto extends OpMode {
 
     @Override
     public void loop() {
-        /*double currentLoopTime = System.currentTimeMillis() / 1000;//The current time of the loop in seconds since unix epoch
+        double currentLoopTime = System.currentTimeMillis() / 1000;//The current time of the loop in seconds since unix epoch
         double currentError = 0.0;
         double newSpeed = 0.0;
 
@@ -129,8 +129,8 @@ public class CubeAuto extends OpMode {
 
                 //If the robot is not lined up
                 if (Math.abs(currentError) > allowedError) {
-                        driveTrain.left.setPower(-proportionalNumber);
-                        driveTrain.right.setPower(proportionalNumber);
+                        driveTrain.left.setPower(proportionalNumber);
+                        driveTrain.right.setPower(-proportionalNumber);
                 } else {
                     //If the robot has been aligned for the past 20 iterations then say its finished
                     //This is to prevent overshoot when we cut power to the motor
@@ -151,9 +151,9 @@ public class CubeAuto extends OpMode {
             if (aligned) {
                 double inchesDriven = ((driveTrain.getLeftInchesDriven()) + (driveTrain.getRightInchesDriven()))/2;
 
-                if (inchesDriven < distanceToCube) {
-                    driveTrain.right.setPower(0.5);
-                    driveTrain.left.setPower(0.5);
+                if (Math.abs(inchesDriven) < 40.0) {
+                    driveTrain.right.setPower(-1);
+                    driveTrain.left.setPower(-1);
                 }else {
                     driveTrain.right.setPower(0);
                     driveTrain.left.setPower(0);
@@ -166,38 +166,11 @@ public class CubeAuto extends OpMode {
             lastError = currentError;
 
 
-        }*/
-//        telemetry.addData("Current Error:", currentError);
-
-        boolean xPressed = xButton.wasJustClicked(gamepad1.x);
-        boolean bPressed = bButton.wasJustClicked(gamepad1.b);
-        boolean aPressed = aButton.wasJustClicked(gamepad1.a);
-        boolean yPressed = yButton.wasJustClicked(gamepad1.y);
-
-        if (xPressed) {
-            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() - 0.01);
-        } else if (bPressed) {
-            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() + 0.01);
         }
-
-        //Increase or decrease pFactor by one thousandth
-        if (aPressed) {
-            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() - 0.001);
-        } else if (yPressed) {
-            driveTrain.setSpeedPFactor(driveTrain.getSpeedPFactor() + 0.001);
-        }
-
-        driveTrain.driveLeftIPS(2.0);
-        driveTrain.driveRightIPS(2.0);
-        telemetry.addData("Right Ticks: ", driveTrain.right.getCurrentPosition());
-        telemetry.addData("Left Ticks: ", driveTrain.left.getCurrentPosition());
-        telemetry.addData("pFactor: ", driveTrain.getSpeedPFactor());
-        telemetry.addData("Left Measured Power: ", driveTrain.left.getPower());
-        telemetry.addData("Left Speed IPS: ", driveTrain.getLeftSpeedIPS());
-        telemetry.addData("Right Speed IPS: ", driveTrain.getRightSpeedIPS());
-      //  telemetry.addData("Cube Aligned: ", aligned);
-  //      telemetry.addData("Turn speed", newSpeed);
-    //    telemetry.addData("Cube Position:", String.valueOf(cubePosition.x) + ", " + String.valueOf(cubePosition.y));
+//      telemetry.addData("Current Error:", currentError);
+      //telemetry.addData("Cube Aligned: ", aligned);
+  //    telemetry.addData("Turn speed", newSpeed);
+    //  telemetry.addData("Cube Position:", String.valueOf(cubePosition.x) + ", " + String.valueOf(cubePosition.y));
         telemetry.update();
 
     }

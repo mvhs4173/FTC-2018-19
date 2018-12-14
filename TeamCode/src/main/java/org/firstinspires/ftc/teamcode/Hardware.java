@@ -58,8 +58,8 @@ public class Hardware {
         //armMotor = hwMap.dcMotor.get("Arm Motor");
         extensionMotor = hwMap.dcMotor.get("Extension Motor");
 
-        leftMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);
         //collectorMotor.setDirection(DcMotor.Direction.FORWARD);
         //armMotor.setDirection(DcMotor.Direction.FORWARD);
         extensionMotor.setDirection(DcMotor.Direction.REVERSE);
