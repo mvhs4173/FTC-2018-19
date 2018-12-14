@@ -200,6 +200,7 @@ public class FtcRobotControllerActivity extends Activity
 
           cameraViewBase = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view);
           frameGrabber = new FrameGrabber(cameraViewBase, 176, 144);
+          frameGrabber.setCameraSide(FrameGrabber.CameraSide.FRONT);
           seekBar1 = (SeekBar) findViewById(R.id.seekBar1);
           seekBar2 = (SeekBar) findViewById(R.id.seekBar2);
           seekBar3 = (SeekBar) findViewById(R.id.seekBar3);
@@ -372,7 +373,7 @@ public class FtcRobotControllerActivity extends Activity
     setContentView(R.layout.activity_ftc_controller);
 
     //////VISION PROCESSING/////////
-    //myOnCreate();
+    myOnCreate();
     /////////VISION END/////////////
 
     preferencesHelper = new PreferencesHelper(TAG, context);
@@ -493,7 +494,7 @@ public class FtcRobotControllerActivity extends Activity
     super.onResume();
 
     /////////VISION/////////
-      //myOnResume();
+      myOnResume();
       ///////END VISION///////
     RobotLog.vv(TAG, "onResume()");
   }
@@ -503,7 +504,7 @@ public class FtcRobotControllerActivity extends Activity
     super.onPause();
 
     //////VISION//////
-      //myOnPause();
+      myOnPause();
       //////END VISION/////
 
     RobotLog.vv(TAG, "onPause()");

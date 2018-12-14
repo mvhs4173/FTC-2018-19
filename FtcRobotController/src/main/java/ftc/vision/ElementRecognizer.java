@@ -33,6 +33,8 @@ public class ElementRecognizer {
     MatOfPoint lastContour = null;
     double lastCubeWidth = 0.0;
     double lastCubeHeight = 0.0;
+    public Point currentCubeVelocity = new Point(0.0, 0.0);//How fast the cube is moving through the screen
+    Point lastFrameCubeVelocity = new Point(0.0, 0.0);//The calculated velocity from the last 2 frames
 
     public ObjectDetectionResult yellowCubeFilter(Mat image, ScreenOrientation orientation, Point screenDimensions) {
         Mat cannyImage = new Mat();
@@ -43,6 +45,9 @@ public class ElementRecognizer {
         Mat grayImage = new Mat();
         Mat blurredImage = new Mat();
         Mat outImage = new Mat();
+
+        double XcushionPixels = -2.0;//An allowance of how many pixels over it can be
+        double YcushionPixels = 2.0;
 
         Point cubePosition = new Point(-1, -1);
 
@@ -118,6 +123,36 @@ public class ElementRecognizer {
 
                 cubePosition = new Point(boundingBox.x + (boundingBox.width/2), boundingBox.y + (boundingBox.height/2));
 
+                //This chunk estimates the velocity that the cube is moving through the screen at
+                if (lastCubePosition.x != -1) {
+                    //The cube's velocity from the last frame to this one
+                    Point immediateVelocity = new Point(cubePosition.x - lastCubePosition.x, cubePosition.y - lastCubePosition.y);
+
+                    //Average the velocity of the cube based on the last two samples we took
+                    double x = (immediateVelocity.x + lastFrameCubeVelocity.x)/2;
+                    double y = (immediateVelocity.y + lastFrameCubeVelocity.y)/2;
+
+                    //Find the bounds of the current box
+                    Point topLeft = new Point(boundingBox.x, boundingBox.y);
+                    Point bottomRight = new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height);
+
+                    //Find the bounds of the last box
+                    Point lastTopLeft = new Point(lastCubePosition.x - lastCubeWidth/2, lastCubePosition.y - lastCubeHeight/2);
+                    Point lastBottomRight = new Point(lastCubePosition.x + lastCubeWidth/2, lastCubePosition.y + lastCubeHeight/2);
+
+                    //If the current box does not break outside the previous box then there is no change in position
+                    if (topLeft.x > lastTopLeft.x - XcushionPixels || bottomRight.x < lastBottomRight.x + XcushionPixels) {
+                        x = 0.0;
+                    }
+
+                    if (topLeft.y > lastTopLeft.y - YcushionPixels || bottomRight.x < lastBottomRight.x + YcushionPixels) {
+                        y = 0.0;
+                    }
+
+                    currentCubeVelocity = new Point(x, y);
+                    lastFrameCubeVelocity = immediateVelocity;
+                }
+
                 //Check if the new cube position is within the position of the last one
                 if (lastCubePosition.x != -1) {
                     //If the cube is within the area of the last cube on the X axis
@@ -125,7 +160,7 @@ public class ElementRecognizer {
                         //If the cube is within the area of the last cube on the Y axis
                         if (Math.abs(cubePosition.y - lastCubePosition.y) < lastCubeHeight/2) {
                             //Now if the area of the last cube is larger than the current one then use the last cube
-                            if (lastCubeArea > cubeSize.height * cubeSize.width) {
+                            if (lastCubeHeight >= cubeSize.height) {
                                 //Use the last cube position and box
                                 cubeSize.height = lastCubeHeight;
                                 cubeSize.width = lastCubeWidth;
@@ -139,12 +174,38 @@ public class ElementRecognizer {
                 Imgproc.rectangle(image, new Point(boundingBox.x, boundingBox.y), new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height), new Scalar(0, 255, 0));
 
                 //The position of the cube in the image
-
                 lastCubePosition = cubePosition;
                 lastCubeArea = cubeSize.height * cubeSize.width;
                 lastCubeWidth = cubeSize.width;
                 lastCubeHeight = cubeSize.height;
                 lastContour = targetContours.get(largestIndex);
+
+            }else { //If we didnt detect any cube in this frame then estimate where the cube is
+                if (currentCubeVelocity.x == 0.0 && currentCubeVelocity.y == 0.0) {
+                    //Esimate the x and y coordinates
+                    double x = lastCubePosition.x;
+                    double y = lastCubePosition.y;
+
+                    //If the cube goes above the point where we dont recognize cubes then just say we dont see it anymore
+                    if (y < screenDimensions.y / 2) {
+                        x = -1.0;
+                        y = -1.0;
+                    }
+
+                    cubePosition = new Point(x, y);//Create the point
+
+                    //Now use the last contour to create a bounding box for the estimated position
+
+                    //Find the bounds of the box
+                    Point topLeftCorner = new Point(cubePosition.x - lastCubeWidth / 2, cubePosition.y - lastCubeHeight / 2);
+                    Point bottomRightCorner = new Point(cubePosition.x + lastCubeWidth / 2, cubePosition.y + lastCubeHeight / 2);
+                    Imgproc.rectangle(image, topLeftCorner, bottomRightCorner, new Scalar(0, 255, 0));//Draw rectangle on screen
+
+                    lastCubePosition = cubePosition;//Set the last cube position for the next loop
+
+                    cubeSize.width = lastCubeWidth;
+                    cubeSize.height = lastCubeHeight;
+                }
             }
             //Imgproc.drawContours(image, contours, largestIndex, new Scalar(0, 255, 0), 3);
             //Rect boundingBox = Imgproc.boundingRect((MatOfPoint)contour);
@@ -154,6 +215,7 @@ public class ElementRecognizer {
                 Log.d("OpenCv Code Error", e.toString());
         }
 
+        //Controls what filter to display on the screen
         if (FtcRobotControllerActivity.viewType == 1) {
             outImage = image;
         }else if (FtcRobotControllerActivity.viewType == 2) {
