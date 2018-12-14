@@ -5,16 +5,23 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+/**
+ * This is our opmode use for testing new code
+ */
 @TeleOp(name = "Testing_TeleOp", group = "Auto")
 public class Testing_TeleOp extends OpMode {
 
-    //Objects
+    //Objects, add the necessary classes needed to test
     Hardware hardware = new Hardware();
     DriveTrain driveTrain;
     Hanger extender;
     MarkerArm markerArm;
-    ToggleButton up = new ToggleButton(), down = new ToggleButton();
 
+    /**
+     * This code is used to catch errors and send them back to help troubleshoot
+     * @param e the error received
+     * @return What the error says after being formatted
+     */
     public String FormatStackTrace(Exception e) {
         String msg = "Exception: " + e.toString();
         for(StackTraceElement ste : e.getStackTrace()) {
@@ -23,6 +30,10 @@ public class Testing_TeleOp extends OpMode {
         return msg;
     }
 
+    /**
+     * Called once
+     * We set up our classes with the hardware.
+     */
     @Override
     public void init() {
         try {
@@ -33,8 +44,10 @@ public class Testing_TeleOp extends OpMode {
             markerArm.setPosition(0);
             extender.task = Hanger.Task.Float;
         }catch(Exception e) {
-            telemetry.addData("Say", FormatStackTrace(e));
+            telemetry.addData("Error", FormatStackTrace(e));
             telemetry.update();
+            Log.getStackTraceString(e);
+            Log.e("Caught Error", FormatStackTrace(e), e);
             throw e;
         }
     }
@@ -44,17 +57,14 @@ public class Testing_TeleOp extends OpMode {
 
     }
 
+    /**
+     * Add the code needed to test in this method
+     */
     @Override
     public void loop() {
         try {
-            if (gamepad1.y){
-                extender.extendHook();
-            } else if (gamepad1.a) {
 
-            } else {
-                extender.stopHook();
-            }
-
+            // What to send back to the phone, add what you need
             telemetry.addData("stop state", extender.getState()[0]);
             telemetry.addData("lower state", extender.getState()[1]);
             telemetry.addData("POS", extender.getPosition());
@@ -62,10 +72,10 @@ public class Testing_TeleOp extends OpMode {
             telemetry.addData("mode", extender.getMode());
             telemetry.update();
         }catch(Exception e) {
-            telemetry.addData("Say", FormatStackTrace(e));
+            telemetry.addData("Error", FormatStackTrace(e));
             telemetry.update();
             Log.getStackTraceString(e);
-            Log.e("null Pointer", FormatStackTrace(e), e);
+            Log.e("Caught Error", FormatStackTrace(e), e);
             throw e;
         }
     }

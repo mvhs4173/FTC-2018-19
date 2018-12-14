@@ -2,24 +2,26 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+
+
 public class MarkerArm {
-    Servo minionServo;
+    Servo markerArmServo;
     double currentPos;
     double origin = 0.1;
     ToggleButton increaseValue = new ToggleButton(), decreaseValue = new ToggleButton();
 
-    MarkerArm(Servo minionServo) {
-        this.minionServo = minionServo;
+    MarkerArm(Servo markerArmServo) {
+        this.markerArmServo = markerArmServo;
         returnToStow();
     }
 
     public void returnToStow() {
         currentPos = origin;
-        minionServo.setPosition(currentPos);
+        markerArmServo.setPosition(currentPos);
     }
 
     public void setPosition(double position) {
-        minionServo.setPosition(position);
+        markerArmServo.setPosition(position);
     }
 
     Timer t = new Timer();
@@ -29,7 +31,7 @@ public class MarkerArm {
 
     public boolean release() {
         currentPos = 0.9;
-        minionServo.setPosition(currentPos);
+        markerArmServo.setPosition(currentPos);
         return t.isTimerUp();
     }
 
@@ -53,6 +55,6 @@ public class MarkerArm {
         } else if (currentPos < 0){
             currentPos = 0;
         }
-        minionServo.setPosition(currentPos);
+        markerArmServo.setPosition(currentPos);
     }
 }

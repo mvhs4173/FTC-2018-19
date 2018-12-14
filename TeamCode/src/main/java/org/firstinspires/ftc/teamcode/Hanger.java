@@ -16,7 +16,7 @@ public class Hanger {
     private DcMotor extensionMotor;
     private ToggleButton decreaseValue,
                          increaseValue;
-    private DigitalChannel stopExtender;
+    private DigitalChannel upperLim;
     private double origin = 0.1;
     private double currentPos;
     private DigitalChannel lowerLim;
@@ -30,33 +30,51 @@ public class Hanger {
     /**
      * @param hookServo servo to control the grasping
      * @param extensionMotor motor to control the extension
+     * @param lowerLim The limit switch to stop decent of the claw, also resets encoder
+     * @param upperLim the limit switch to stop accent of the motor, encoder is used as backup 
      */
     Hanger(Servo hookServo,
            DcMotor extensionMotor,
-           DigitalChannel stopExtender,
+           DigitalChannel upperLim,
            DigitalChannel lowerLim) {
         decreaseValue = new ToggleButton();
         increaseValue = new ToggleButton();
         this.clawServo = hookServo;
         this.extensionMotor = extensionMotor;
-        this.stopExtender = stopExtender;
+        this.upperLim = upperLim;
         this.lowerLim = lowerLim;
         currentPos = origin;
     }
 
+    /**
+     * Closes the Claw on the hanger
+     * use moveServo method to find an appropriate value 
+     */
     public void grip() {
         currentPos = 0.3;
         clawServo.setPosition(currentPos); // on scale of 0 to 1
     }
 
+    /**
+     * If needed you can reset the origin 
+     * @param newOrigin new desired origin position
+     */
     public void setOrigin(double newOrigin) {
         origin = newOrigin;
     }
 
+    /**
+     * returns the servo to the origin position set. 
+     * This can be use for starting position.
+     */
     public void returnToOrigin() {
         clawServo.setPosition(origin);
     }
 
+    /**
+     * Opens the Claw on the hanger
+     * use moveServo method to find an appropriate value 
+     */
     public void release() {
         currentPos = 0.05;
         clawServo.setPosition(currentPos);
@@ -81,6 +99,11 @@ public class Hanger {
         clawServo.setPosition(currentPos);
     }
 
+    /**
+     * This extends the linear slide. 
+     * before setting the power we check to make sure we are in the right mode
+     * if not we change it prior to running.
+     */
     public void extendHook(){
         if (extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -88,10 +111,18 @@ public class Hanger {
         extensionMotor.setPower(1);
     }
 
+    /**
+     * This method is used to stop the motor.
+     * Usually call this at the end of a task
+     */
     public void stopHook(){
         extensionMotor.setPower(0);
     }
 
+    /**
+     * For when the arm gets initialized mid way we can pull it back to reset. 
+     * @return tells us if the command is finished
+     */
     public boolean resetZero() {
         if (extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -106,6 +137,11 @@ public class Hanger {
         }
     }
 
+    /**
+     * This retracts the hook 
+     * We use a switch statement to verify things are called in the right order
+     * Sets the mode if not set 
+     */
     public void retractHook() {
         switch (retractOrder) {
             case INIT:
@@ -127,8 +163,12 @@ public class Hanger {
         }
     }
 
+    /**
+     * Tells you the state 
+     * @return
+     */
     public boolean[] getState(){
-        return new boolean[]{stopExtender.getState(),lowerLim.getState()};
+        return new boolean[]{upperLim.getState(),lowerLim.getState()};
     }
 
     public double getPosition() {
@@ -169,7 +209,7 @@ public class Hanger {
 				switch(dropOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4600)) { // 4800 is max on encoder as a backup
+                        if (upperLim.getState() || (extensionMotor.getCurrentPosition() > 2400)) { // 4800 is max on encoder as a backup
                             stopHook();
                             release();
                             psi.init(1);
@@ -192,7 +232,7 @@ public class Hanger {
                 switch(hangOrder) {
                     case INIT:
                         extendHook();
-                        if (stopExtender.getState() || (extensionMotor.getCurrentPosition() > 4600)) { // 4800 is max on encoder as a backup
+                        if (upperLim.getState() || (extensionMotor.getCurrentPosition() > 2400)) { // 4800 is max on encoder as a backup
                             stopHook();
                             grip();
                             retractOrder = Order.INIT;

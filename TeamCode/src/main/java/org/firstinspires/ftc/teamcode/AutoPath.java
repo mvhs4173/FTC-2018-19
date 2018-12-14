@@ -68,8 +68,8 @@ public class AutoPath {
                 break;
             case DRIVE:
                 if (!sigma.isTimerUp()) {
-                    driveTrain.left.setPower(1);
-                    driveTrain.right.setPower(1);
+                    driveTrain.left.setPower(-1);
+                    driveTrain.right.setPower(-1);
                 } else if (sigma.isTimerUp()){
                     driveTrain.stopMotors();
                     task = Task.FINDGOLD;
@@ -127,8 +127,8 @@ public class AutoPath {
                 break;
             case PARK:
                 if (!omikron.isTimerUp()) {
-                    driveTrain.left.setPower(-1);
-                    driveTrain.right.setPower(-1);
+                    driveTrain.left.setPower(1);
+                    driveTrain.right.setPower(1);
                 } else if (omikron.isTimerUp()){
                     driveTrain.stopMotors();
                     task = Task.DONE;
