@@ -6,9 +6,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-// This assigns the class to the autonomous list of opmodes on the driver phone
-// It also gives a name to appear on the list, and a group.
-// You cannot have identical names or the code will give an error.
+
+/*
+@Autonomous
+This assigns the class to the autonomous list of opmodes on the driver phone
+It also gives a name to appear on the list, and a group.
+You cannot have identical names or the code will give an error.
+ */
 @Autonomous(name = "Auto", group = "Auto")
 public class AutonomousOpMode extends OpMode { // classifies that this class is an opmode.
     //Objects used on the robot
@@ -28,11 +32,13 @@ public class AutonomousOpMode extends OpMode { // classifies that this class is 
     @Override
     public void init() {
         hardware.init(hardwareMap);
-        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.compass);
+        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.imu);
         hanger = new Hanger(hardware.hookServo, hardware.extensionMotor, hardware.extenderStop, hardware.extenderLowerLim);
         markerArm = new MarkerArm(hardware.markerServo);
-        auto = new AutoPath(hardware, driveTrain, hanger, hardware.compass, markerArm);
+        auto = new AutoPath(hardware, driveTrain, hanger, hardware.imu, markerArm);
         auto.init();
+        start = AutoPath.Start.GOLD;
+        team = AutoPath.Team.RED;
     }
 
     /**
@@ -60,13 +66,13 @@ public class AutonomousOpMode extends OpMode { // classifies that this class is 
                 team = AutoPath.Team.RED;
             }
         }
-        hardware.compass.resetHeading(); // sets the gyro to zero
+        hardware.imu.resetHeading(); // sets the gyro to zero
         //these are returned to the driver phone to tell us what the current values they are
         telemetry.addData("Team", team);
         telemetry.addData("Start", start);
-        telemetry.addData("Raw Compass", hardware.compass.getRawHeading());
-        telemetry.addData("heading", hardware.compass.getHeading());
-        telemetry.addData("OriginAngle", hardware.compass.getOriginalRawHeading());
+        telemetry.addData("Raw Imu", hardware.imu.getRawHeading());
+        telemetry.addData("heading", hardware.imu.getHeading());
+        telemetry.addData("OriginAngle", hardware.imu.getOriginalRawHeading());
         telemetry.update();
     }
 
@@ -92,9 +98,9 @@ public class AutonomousOpMode extends OpMode { // classifies that this class is 
         //these are the values we want to see on the driver phone
         telemetry.addData("Team", team);
         telemetry.addData("Start", start);
-        telemetry.addData("Raw Compass", hardware.compass.getRawHeading());
-        telemetry.addData("heading", hardware.compass.getHeading());
-        telemetry.addData("OriginAngle", hardware.compass.getOriginalRawHeading());
+        telemetry.addData("Raw Imu", hardware.imu.getRawHeading());
+        telemetry.addData("heading", hardware.imu.getHeading());
+        telemetry.addData("OriginAngle", hardware.imu.getOriginalRawHeading());
         telemetry.addData("DesiredAngle", desiredAngle);
         telemetry.addData("newSpeed", driveTrain.left.getPower());
         telemetry.update();

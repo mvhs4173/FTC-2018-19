@@ -90,7 +90,7 @@ digin
 digout
 
 ** Localization:
-compass
+imu
 gyro
 imu 
 navx

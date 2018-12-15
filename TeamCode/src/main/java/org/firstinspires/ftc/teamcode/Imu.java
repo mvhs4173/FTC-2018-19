@@ -14,12 +14,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @SuppressWarnings("unused")
-public class Compass {
+public class Imu {
     private BNO055IMU compass;
     private double originalRawHeading = 0;
     private double originPitch = 0;
 
-    Compass(BNO055IMU compass) {
+    Imu(BNO055IMU compass) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;

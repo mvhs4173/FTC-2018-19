@@ -38,7 +38,7 @@ public class Testing_TeleOp extends OpMode {
     public void init() {
         try {
             hardware.init(hardwareMap);
-            driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.compass);
+            driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.imu);
             extender = new Hanger(hardware.hookServo, hardware.extensionMotor, hardware.extenderStop, hardware.extenderLowerLim);
             markerArm = new MarkerArm(hardware.markerServo);
             markerArm.setPosition(0);

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -11,9 +11,12 @@ Sets hanger to starting position (setOrigin)
 When moved from origin, code allows hanger to return to the starting position
  */
 
+/**
+ * This class Controls our hanging mechanism.
+ */
 public class Hanger {
     private Servo clawServo;
-    private DcMotor extensionMotor;
+    private DcMotorEx extensionMotor;
     private ToggleButton decreaseValue,
                          increaseValue;
     private DigitalChannel upperLim;
@@ -26,6 +29,7 @@ public class Hanger {
     Task task;
     public Order dropOrder;
     private Order hangOrder;
+    private int encoderLim = 2400; //the upper bound on the encoder
 
     /**
      * @param hookServo servo to control the grasping
@@ -34,7 +38,7 @@ public class Hanger {
      * @param upperLim the limit switch to stop accent of the motor, encoder is used as backup 
      */
     Hanger(Servo hookServo,
-           DcMotor extensionMotor,
+           DcMotorEx extensionMotor,
            DigitalChannel upperLim,
            DigitalChannel lowerLim) {
         decreaseValue = new ToggleButton();
@@ -105,8 +109,8 @@ public class Hanger {
      * if not we change it prior to running.
      */
     public void extendHook(){
-        if (extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-            extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (extensionMotor.getMode() != DcMotorEx.RunMode.RUN_USING_ENCODER) {
+            extensionMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         }
         extensionMotor.setPower(1);
     }
@@ -135,11 +139,11 @@ public class Hanger {
      * @return tells us if the command is finished
      */
     public boolean resetZero() {
-        if (extensionMotor.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-            extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (extensionMotor.getMode() != DcMotorEx.RunMode.RUN_USING_ENCODER) {
+            extensionMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         }
         if (lowerLim.getState()){
-            extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            extensionMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             stopHook();
             return true;
         } else {
@@ -156,10 +160,10 @@ public class Hanger {
     public void retractHook() {
         switch (retractOrder) {
             case INIT:
-                if (extensionMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                    extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                if (extensionMotor.getMode() != DcMotorEx.RunMode.RUN_TO_POSITION) {
+                    extensionMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 }
-                target = 0;
+                target = -encoderLim; // TODO: 12/14/2018 the retraction is currently counting twice as fast
                 extensionMotor.setTargetPosition(target);
                 retractOrder = Order.RUN;
                 break;
@@ -169,31 +173,48 @@ public class Hanger {
                 if ((error == 0) || (lowerLim.getState())) retractOrder = Order.DONE;
                 break;
             case DONE:
-                extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                extensionMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
                 stopHook();
         }
     }
 
     /**
-     * Tells you the state 
-     * @return
+     * Tells you the state of the limit switches on the robot
+     * Index 0 is the upper Switch
+     * Index 1 is the lower Switch
+     * @return True if pressed
      */
     public boolean[] getState(){
         return new boolean[]{upperLim.getState(),lowerLim.getState()};
     }
 
+    /**
+     * Used to verify the right position
+     * @return The servos position from 0 to 1
+     */
     public double getPosition() {
         return clawServo.getPosition();
     }
 
+    /**
+     * Used for checking the motors position
+     * @return Motor position in clicks
+     */
     double getEncoder() {
         return extensionMotor.getCurrentPosition();
     }
 
-    DcMotor.RunMode getMode() {
+    /**
+     * Used to check the mode currently set
+     * @return The current RunMode of the motor.
+     */
+    DcMotorEx.RunMode getMode() {
         return extensionMotor.getMode();
     }
 
+    /**
+     * Our list used in the main Switch in the execute function
+     */
     enum Task{
         HANG,
         DROP,
@@ -201,6 +222,9 @@ public class Hanger {
         RESET
     }
 
+    /**
+     * Used in the sub Switches in the Execute function
+     */
     public enum Order{
         INIT,
         WAIT,
@@ -208,19 +232,29 @@ public class Hanger {
         DONE
     }
 
+    /**
+     * Initializes the Variables for running execute
+     * prevents null objects
+     * @param task1 The desired Operation Hang or Drop
+     */
     void init(Task task1){
         task = task1;
         dropOrder = Order.INIT;
         hangOrder = Order.INIT;
     }
 
+    /**
+     * our main call function. we put this in our loop of the TeleOp.
+     * automatically preforms the desired task Hang or Drop
+     * @param button the button you want to use to say you are in position
+     */
     void execute(boolean button){
         switch(task){
             case DROP:
 				switch(dropOrder) {
                     case INIT:
                         extendHook();
-                        if (upperLim.getState() || (extensionMotor.getCurrentPosition() > 2400)) { // 4800 is max on encoder as a backup
+                        if (upperLim.getState() || (extensionMotor.getCurrentPosition() > encoderLim)) { // encoderLim is max on encoder as a backup
                             stopHook();
                             release();
                             psi.init(1);
@@ -243,7 +277,7 @@ public class Hanger {
                 switch(hangOrder) {
                     case INIT:
                         extendHook();
-                        if (upperLim.getState() || (extensionMotor.getCurrentPosition() > 2400)) { // 4800 is max on encoder as a backup
+                        if (upperLim.getState() || (extensionMotor.getCurrentPosition() > encoderLim)) { // encoderLim is max on encoder as a backup
                             stopHook();
                             grip();
                             retractOrder = Order.INIT;

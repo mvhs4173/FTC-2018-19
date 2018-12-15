@@ -41,7 +41,7 @@ public class CubeAuto extends OpMode {
     public void init() {
         t = telemetry;
         hardware.init(hardwareMap);
-        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.compass);
+        driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.imu);
         vision = FtcRobotControllerActivity.frameGrabber;
 
         timer = new Timer();

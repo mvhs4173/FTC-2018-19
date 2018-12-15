@@ -545,7 +545,7 @@ Version 2.10 (released on 16.09.03)
     - support for android.graphics.Color.
     - added support for ElapsedTime.
     - improved look and legibility of blocks.
-    - support for compass sensor.
+    - support for imu sensor.
     - support for ultrasonic sensor.
     - support for IrSeeker.
     - support for LED.

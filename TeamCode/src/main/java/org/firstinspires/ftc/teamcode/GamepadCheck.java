@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+/**
+ * This opmode is used to test the inputs on our gamepad
+ */
 @TeleOp(name = "GamePadCheck")
 public class GamepadCheck extends OpMode {
 
