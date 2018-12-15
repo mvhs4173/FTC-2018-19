@@ -112,6 +112,17 @@ public class Hanger {
     }
 
     /**
+     * This is a backup method to control the extension motor manually
+     * @param up button to specify up
+     * @param down button to specify down
+     */
+    public void runManually(boolean up, boolean down){
+        if (up) extensionMotor.setPower(1);
+        else if (down) extensionMotor.setPower(-1);
+        else stopHook();
+    }
+
+    /**
      * This method is used to stop the motor.
      * Usually call this at the end of a task
      */
