@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-/**
- * This os our class with the order of events for the autonomous
- */
 public class AutoPath {
-    // We create all the objects we need
     Task task;
     Start start;
     Team team;
@@ -109,8 +105,8 @@ public class AutoPath {
                 break;
             case DRIVE:
                 if (!sigma.isTimerUp()) { // when the timer is still running drive forwards
-                    driveTrain.left.setPower(-1); // TODO: 12/14/2018 figure out why forwards is negative
-                    driveTrain.right.setPower(-1);
+                    driveTrain.left.setPower(1); // TODO: 12/14/2018 figure out why forwards is negative
+                    driveTrain.right.setPower(1);
                 } else if (sigma.isTimerUp()){ // have we moved far enough
                     driveTrain.stopMotors();
                     task = Task.FINDGOLD;
@@ -159,8 +155,8 @@ public class AutoPath {
                 break;
             case PARK:
                 if (!omikron.isTimerUp()) { // drive back until desired distance
-                    driveTrain.left.setPower(1); //same wonder about negative forward
-                    driveTrain.right.setPower(1);
+                    driveTrain.left.setPower(-1); //same wonder about negative forward
+                    driveTrain.right.setPower(-1);
                 } else if (omikron.isTimerUp()){
                     driveTrain.stopMotors();
                     task = Task.DONE;

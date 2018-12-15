@@ -48,6 +48,7 @@ public class Hanger {
         this.upperLim = upperLim;
         this.lowerLim = lowerLim;
         currentPos = origin;
+        extensionMotor.setMotorEnable();
     }
 
     /**
@@ -113,6 +114,21 @@ public class Hanger {
             extensionMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         }
         extensionMotor.setPower(1);
+    }
+
+    public void setExtensionMotorPower(double power) {
+        extensionMotor.setPower(power);
+    }
+
+    /**
+     * This is a backup method to control the extension motor manually
+     * @param up button to specify up
+     * @param down button to specify down
+     */
+    public void runManually(boolean up, boolean down){
+        if (up) extensionMotor.setPower(1);
+        else if (down) extensionMotor.setPower(-1);
+        else stopHook();
     }
 
     /**

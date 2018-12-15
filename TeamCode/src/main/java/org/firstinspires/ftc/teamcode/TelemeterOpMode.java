@@ -49,10 +49,14 @@ public class TelemeterOpMode extends OpMode {
     public void loop() {
         try {
         driveTrain.driveWithJoyStick(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        if (up.wasJustClicked(gamepad1.dpad_up)) {
-            hanger.init(Hanger.Task.HANG);
-        } else if (down.wasJustClicked(gamepad1.dpad_down)) {
-            hanger.init(Hanger.Task.DROP);
+        if (gamepad1.left_trigger == 1){
+            hanger.runManually(gamepad1.dpad_up, gamepad1.dpad_down);
+        } else {
+            if (up.wasJustClicked(gamepad1.dpad_up)) {
+                hanger.init(Hanger.Task.HANG);
+            } else if (down.wasJustClicked(gamepad1.dpad_down)) {
+                hanger.init(Hanger.Task.DROP);
+            }
         }
         if (gamepad1.y) hanger.init(Hanger.Task.RESET);
         hanger.execute(gamepad1.a);

@@ -67,6 +67,7 @@ public class AutonomousOpMode extends OpMode { // classifies that this class is 
             }
         }
         hardware.imu.resetHeading(); // sets the gyro to zero
+        hanger.setExtensionMotorPower(0.15);
         //these are returned to the driver phone to tell us what the current values they are
         telemetry.addData("Team", team);
         telemetry.addData("Start", start);
