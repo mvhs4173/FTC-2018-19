@@ -48,6 +48,7 @@ public class Hanger {
         this.upperLim = upperLim;
         this.lowerLim = lowerLim;
         currentPos = origin;
+        extensionMotor.setMotorEnable();
     }
 
     /**
@@ -113,6 +114,10 @@ public class Hanger {
             extensionMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         }
         extensionMotor.setPower(1);
+    }
+
+    public void setExtensionMotorPower(double power) {
+        extensionMotor.setPower(power);
     }
 
     /**

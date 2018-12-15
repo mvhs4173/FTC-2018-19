@@ -46,7 +46,7 @@ public class Hardware {
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-        bno = hwMap.get(BNO055IMU.class, "bno");
+        bno = hwMap.get(BNO055IMU.class, "imu");
         imu = new Imu(bno);
 
         // Define and Initialize Motors
