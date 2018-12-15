@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.text.BreakIterator;
 
 /**
  * This is NOT an OpMode.
@@ -27,12 +25,12 @@ public class Hardware {
     public DcMotor rightMotor = null;
     //public DcMotor collectorMotor = null;
     //public DcMotor armMotor = null;
-    public DcMotor extensionMotor = null;
-    public BNO055IMU imu = null;
+    public DcMotorEx extensionMotor = null;
+    public BNO055IMU bno = null;
     public Servo hookServo = null;
     Servo markerServo;
     public DigitalChannel extenderStop = null;
-    Compass compass = null;
+    Imu imu = null;
 
     /* local OpMode members. */
     private HardwareMap hwMap  =  null;
@@ -48,35 +46,35 @@ public class Hardware {
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        compass = new Compass(imu);
+        bno = hwMap.get(BNO055IMU.class, "bno");
+        imu = new Imu(bno);
 
         // Define and Initialize Motors
         leftMotor = hwMap.dcMotor.get("Left Motor");
         rightMotor = hwMap.dcMotor.get("Right Motor");
         //collectorMotor = hwMap.dcMotor.get("Collector Motor");
         //armMotor = hwMap.dcMotor.get("Arm Motor");
-        extensionMotor = hwMap.dcMotor.get("Extension Motor");
+        extensionMotor = hwMap.get(DcMotorEx.class,"Extension Motor");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         //collectorMotor.setDirection(DcMotor.Direction.FORWARD);
         //armMotor.setDirection(DcMotor.Direction.FORWARD);
-        extensionMotor.setDirection(DcMotor.Direction.REVERSE);
+        extensionMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //collectorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extensionMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //collectorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extensionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extensionMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        extensionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extensionMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

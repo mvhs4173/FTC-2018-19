@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 /**
  * Created by ROBOT18 on 10/26/2017.
+ * This is a wrapper for the trig functions of the math class
+ * converts The radians to Degrees for better understanding of freshman
  */
 
 @SuppressWarnings("unused")

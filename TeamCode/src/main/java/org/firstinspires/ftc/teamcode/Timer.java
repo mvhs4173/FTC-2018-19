@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 /**
  * Created by ROBOT18 on 11/7/2017.
+ * Use for when you need to keep track of time
  */
 
 public class Timer {

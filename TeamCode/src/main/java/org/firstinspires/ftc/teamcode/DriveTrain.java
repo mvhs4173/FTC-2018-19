@@ -2,9 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+/**
+ * This is the class that controls driving the robot
+ */
 public class DriveTrain {
+    // Objects needed for functioning
     DcMotor left, right;
-    Compass  compass;
+    Imu imu;
     double linePFactor = 0.05;
     double lineAllowableAngleError = 0.1;
     double lineMaxMultiplyNumber = 3;
@@ -26,23 +30,25 @@ public class DriveTrain {
     private int rightOriginPosition = 0;
 
     /**
-     * @param newLeft Left Motor
-     * @param newRight Right Motor
+     * The Constructor
+     * @param newLeft Left Motor from the hardware
+     * @param newRight Right Motor from the hardware
      */
-    DriveTrain(DcMotor newLeft, DcMotor newRight, Compass compass){
+    DriveTrain(DcMotor newLeft, DcMotor newRight, Imu imu){
         left = newLeft;
         right = newRight;
         lastInchesDrivenLeft = getLeftInchesDriven();
         lastInchesDrivenRight = getRightInchesDriven();
-        this.compass = compass;
+        this.imu = imu;
     }
 
     /**
+     * used in the teleop for driving manually
      * @param x The horizontal value of the joystick
      * @param y The vertical value of the joystick
      */
     void driveWithJoyStick(double x, double y){
-        //Forward on JoyStick is negative
+        //Forward on JoyStick is negative due to the way it was built
         double
             Y = Math.signum(y)*Math.pow(Math.abs(y), 2.5),
             V=(1-Math.abs(x))*(Y /1)+ Y,
@@ -53,22 +59,38 @@ public class DriveTrain {
         right.setPower(-R);
     }
 
+    /**
+     * Used to check the positions of the motors in clicks from the starting position
+     * @return 0 is the left motor index, 1 is the right motor index
+     */
     int[] getEncoderPos() {
         return new int[]{left.getCurrentPosition() - leftOriginPosition, right.getCurrentPosition() - rightOriginPosition};
     }
 
+    /**
+     * used to reset the position of the motor to 0
+     */
     public void resetLeftEncoder() {
         leftOriginPosition = left.getCurrentPosition();
         lastInchesDrivenLeft = 0.0;
     }
 
+    /**
+     * used to reset the position of the motor to 0
+     */
     public void resetRightEncoder() {
         rightOriginPosition = right.getCurrentPosition();
         lastInchesDrivenRight = 0.0;
     }
 
+    /**
+     * this is a method from last year
+     * used to help drive in a straight line
+     * @param desiredHeading the angle from the imu you want to stay pointed
+     * @return tells us if we are going at the right angle
+     */
     public boolean maintainHeading(double desiredHeading) {
-        double currentHeading = this.compass.getHeading();
+        double currentHeading = this.imu.getHeading();
         double allowableError = 1;//degrees
 
         double pFactor = 0.00009;
@@ -92,6 +114,10 @@ public class DriveTrain {
         }
     }
 
+    /**
+     * used for when we want to stop the motors
+     * typically called after a command is finished
+     */
     public void stopMotors() {
         left.setPower(0);
         right.setPower(0);
@@ -105,7 +131,7 @@ public class DriveTrain {
     public boolean driveDistance(double distance, double desiredHeading) {
         double[] currentPosition = {getEncoderPos()[0], getEncoderPos()[1]};
         double[] error = {(distance * clicksPerInch)-currentPosition[0],(distance * clicksPerInch)-currentPosition[1]};
-        //double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, desiredHeading, compass.getHeading());
+        //double[] newMotorSpeeds = calculateMotorSpeedsForStraightLine(1, desiredHeading, bno.getHeading());
         if (maintainHeading(desiredHeading)) {
             left.setPower(/*newMotorSpeeds[0]*/-0.5*error[0]);
             right.setPower(/*newMotorSpeeds[1]*/-0.5*error[1]);
@@ -115,6 +141,10 @@ public class DriveTrain {
         return error[0] == 0;
     }
 
+    /**
+     * how far has the left side moved
+     * @return in inches the distance traveled
+     */
     public double getLeftInchesDriven() {
         double ticks = left.getCurrentPosition();
         double revolutions = ticks/clicksPerRev;
@@ -122,6 +152,10 @@ public class DriveTrain {
         return inchesDriven;
     }
 
+    /**
+     * how far has the right side moved
+     * @return in inches the distance traveled
+     */
     public double getRightInchesDriven() {
         double ticks = right.getCurrentPosition();
         double revolutions = ticks/clicksPerRev;
@@ -129,7 +163,9 @@ public class DriveTrain {
         return inchesDriven;
     }
 
-    //Drive inches per second, must be called at 20ms intervals
+    /**
+     * Drive inches per second, must be called at 20ms intervals
+     */
     public void driveLeftIPS(double ips) {
         double currentIPS = getLeftSpeedIPS();
         double error = ips - currentIPS;
@@ -139,6 +175,9 @@ public class DriveTrain {
         left.setPower(newPower);
     }
 
+    /**
+     * Drive inches per second, must be called at 20ms intervals
+     */
     public void driveRightIPS(double ips) {
         double currentIPS = getRightSpeedIPS();
         double error = ips - currentIPS;
@@ -148,14 +187,26 @@ public class DriveTrain {
         right.setPower(newPower);
     }
 
+    /**
+     * the factor at which to tune proportionally
+     * @param pFactor typically a value less than 1
+     */
     public void setSpeedPFactor(double pFactor) {
         speedP = pFactor;
     }
 
+    /**
+     * What pFactor do you currently have
+     * @return a value less than 1
+     */
     public double getSpeedPFactor() {
         return speedP;
     }
 
+    /**
+     * how fast the left side is currently traveling
+     * @return in inches per second
+     */
     public double getLeftSpeedIPS() {
         double currentInchesDriven = getLeftInchesDriven();
         double speed = (currentInchesDriven - lastInchesDrivenLeft) * loopIterationsPerSecond;
@@ -163,6 +214,10 @@ public class DriveTrain {
         return speed;
     }
 
+    /**
+     * how fast the right side is currently traveling
+     * @return in inches per second
+     */
     public double getRightSpeedIPS() {
         double currentInchesDriven = getRightInchesDriven();
         double speed = (currentInchesDriven - lastInchesDrivenRight) * loopIterationsPerSecond;
@@ -170,8 +225,12 @@ public class DriveTrain {
         return speed;
     }
 
+    /**
+     * used for turning the robot automatically
+     * @param desiredAngle which way do you want to point
+     */
     void rotateToAngle(double desiredAngle) {
-        double error = desiredAngle - compass.getHeading();
+        double error = desiredAngle - imu.getHeading();
         if (error > 0) {
             left.setPower(error * -0.05);
             right.setPower(error *  0.05);
