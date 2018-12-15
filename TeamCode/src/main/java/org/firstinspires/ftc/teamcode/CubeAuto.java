@@ -36,6 +36,14 @@ public class CubeAuto extends OpMode {
     bButton = new ToggleButton();
     public static Telemetry t;
 
+    public enum CubeSide {
+            LEFT,
+            RIGHT,
+            UNDETERMINED;
+    }
+
+
+    CubeSide cubeSide;//If the cube is on left or right of the robot, used so the robot knows which way to turn to get to depot after hitting cube
     //Vision vision;
     @Override
     public void init() {
@@ -43,6 +51,8 @@ public class CubeAuto extends OpMode {
         hardware.init(hardwareMap);
         driveTrain = new DriveTrain(hardware.leftMotor, hardware.rightMotor, hardware.imu);
         vision = FtcRobotControllerActivity.frameGrabber;
+
+        cubeSide = CubeSide.UNDETERMINED;
 
         timer = new Timer();
     }
@@ -117,6 +127,13 @@ public class CubeAuto extends OpMode {
             //Make sure the cube is in view of the camera
             if (cubePosition.x > -1 && !aligned) {
                 currentError = targetPosition - cubePosition.x;//How far away the robot is from the target
+
+                //Set which side we found the cube on
+                if (cubePosition.x <= targetPosition) {
+                    cubeSide = CubeSide.LEFT;
+                }else {
+                    cubeSide = CubeSide.RIGHT;
+                }
 
                 //Calculate the derivative part of PD loop
                 double derivativeNumber = ((currentError - lastError)/(currentLoopTime - lastLoopTime)) * dFactor;
